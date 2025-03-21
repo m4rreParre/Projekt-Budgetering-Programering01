@@ -16,6 +16,12 @@ class Program
         else if (commandParts[0] == "clear")
         {
             Console.Clear();
+            Console.WriteLine("Välkommen till Budgeteringprogrammet! Skriv 'exit' för att avsluta.");
+            Console.WriteLine("lista över kommandon: ");
+            Console.WriteLine("expense add <belopp> <kategori> <beskrivning>");
+            Console.WriteLine("income add <belopp> <kategori> <beskrivning>");
+            Console.WriteLine("balance - för att visa ditt saldo");
+            Console.WriteLine("clear - för att ränsa skärmen");
         }
         else if (commandParts.Length > 3 && commandParts[0] == "expense" && commandParts[1] == "add")
         {
@@ -73,6 +79,11 @@ class Program
     static void Main(string[] args)
     {
         Console.WriteLine("Välkommen till Budgeteringprogrammet! Skriv 'exit' för att avsluta.");
+        Console.WriteLine("lista över kommandon: ");
+        Console.WriteLine("expense add <belopp> <kategori> <beskrivning>");
+        Console.WriteLine("income add <belopp> <kategori> <beskrivning>");
+        Console.WriteLine("balance - för att visa ditt saldo");
+        Console.WriteLine("clear - för att ränsa skärmen");
 
         while (true)
         {
