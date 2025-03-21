@@ -5,9 +5,9 @@ using System.IO;
 class Program
 {
     //TODO Make description optional
-    //TODO filters in listbalance
+    //TODO filters in listbalance syntax list balance sort_by="value" sort="highest", list balance sort_by="value" sort="lowest"
     //TODO filter by category
-    //TODO filter by date
+    //TODO filter by date - last month, last week, last year
     //TODO filter by amount less / most
 
     //TODO add a way to add many transactions at once
@@ -108,7 +108,7 @@ class Program
 
         while (true)
         {
-            Console.Write(">");
+            Console.Write("> ");
             string command = Console.ReadLine();
             HandleCommand(command);
         }
