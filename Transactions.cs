@@ -8,7 +8,7 @@ public struct Transaction
     public string Description; //beskrivning (t.ex. "Köpte mjölk", "Betalade hyra")
     public DateTime Date; //Datum när transaktionen gjordes
 
-    public Transaction(decimal amount, string category, string description)
+    public Transaction(decimal amount, string category, string description = "")
     {
         Amount = amount;
         Category = category;

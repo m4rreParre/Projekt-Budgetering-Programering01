@@ -46,7 +46,17 @@ class Program
         }
         else if (commandParts.Length > 3 && commandParts[0] == "income" && commandParts[1] == "add")
         {
-            AddIncome(decimal.Parse(commandParts[2]), commandParts[3], commandParts[4]);
+            if (commandParts.Length != 4)
+            {
+                AddIncome(decimal.Parse(commandParts[2]), commandParts[3]);
+                Console.WriteLine($"inkomsten har lagts till: {commandParts[2]}kr för {commandParts[3]} ({commandParts[4]})");
+            }
+            else if (commandParts.Length > 4)
+            {
+                AddIncome(decimal.Parse(commandParts[2]), commandParts[3], commandParts[4]);
+                Console.WriteLine($"inkomsten har lagts till: {commandParts[2]}kr för {commandParts[3]} ({commandParts[4]})");
+            }
+
         }
         else if (commandParts.Length == 1 && commandParts[0] == "balance")
         {
@@ -61,13 +71,13 @@ class Program
             Console.WriteLine("Okänt kommando");
         }
     }
-    static void AddExpense(decimal amount, string category, string description)
+    static void AddExpense(decimal amount, string category, string description = "")
     {
         Transaction transaction = new Transaction(-amount, category, description);
         transactions.Add(transaction);
         Console.WriteLine($"Utgiften har lagts till: {amount}kr för {category} ({description})");
     }
-    static void AddIncome(decimal amount, string category, string description)
+    static void AddIncome(decimal amount, string category, string description = "")
     {
         Transaction transaction = new Transaction(amount, category, description);
         transactions.Add(transaction);
@@ -105,6 +115,8 @@ class Program
     static void Main(string[] args)
     {
         introduction();
+
+        Console.WriteLine();
 
         while (true)
         {
