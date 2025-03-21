@@ -29,7 +29,6 @@ class Program
     static void HandleCommand(string command)
     {
         command = command.Trim().ToLower();
-        Console.WriteLine(command);
         string[] commandParts = command.Split(' ');
         if (commandParts[0] == "exit")
         {
@@ -42,20 +41,25 @@ class Program
         }
         else if (commandParts.Length > 3 && commandParts[0] == "expense" && commandParts[1] == "add")
         {
-            commandParts[4] = commandParts[4];
-            AddExpense(decimal.Parse(commandParts[2]), commandParts[3], commandParts[4]);
+            if (commandParts.Length == 4)
+            {
+                AddExpense(decimal.Parse(commandParts[2]), commandParts[3]);
+            }
+            else if (commandParts.Length == 5)
+            {
+                AddExpense(decimal.Parse(commandParts[2]), commandParts[3], commandParts[4]);
+            }
+
         }
         else if (commandParts.Length > 3 && commandParts[0] == "income" && commandParts[1] == "add")
         {
             if (commandParts.Length == 4)
             {
                 AddIncome(decimal.Parse(commandParts[2]), commandParts[3]);
-                Console.WriteLine($"inkomsten har lagts till: {commandParts[2]}kr för {commandParts[3]}");
             }
             else if (commandParts.Length == 5)
             {
                 AddIncome(decimal.Parse(commandParts[2]), commandParts[3], commandParts[4]);
-                Console.WriteLine($"inkomsten har lagts till: {commandParts[2]}kr för {commandParts[3]} ({commandParts[4]})");
             }
 
         }
@@ -72,13 +76,13 @@ class Program
             Console.WriteLine("Okänt kommando");
         }
     }
-    static void AddExpense(decimal amount, string category, string description = "")
+    static void AddExpense(decimal amount, string category, string description = "no description")
     {
         Transaction transaction = new Transaction(-amount, category, description);
         transactions.Add(transaction);
         Console.WriteLine($"Utgiften har lagts till: {amount}kr för {category} ({description})");
     }
-    static void AddIncome(decimal amount, string category, string description = "")
+    static void AddIncome(decimal amount, string category, string description = "no description")
     {
         Transaction transaction = new Transaction(amount, category, description);
         transactions.Add(transaction);
