@@ -13,10 +13,18 @@ class Program
         {
             Environment.Exit(0);
         }
+        else if (commandParts[0] == "clear")
+        {
+            Console.Clear();
+        }
         else if (commandParts.Length > 3 && commandParts[0] == "expense" && commandParts[1] == "add")
         {
             commandParts[4] = commandParts[4];
             AddExpense(decimal.Parse(commandParts[2]), commandParts[3], commandParts[4]);
+        }
+        else if (commandParts.Length > 3 && commandParts[0] == "income" && commandParts[1] == "add")
+        {
+            AddIncome(decimal.Parse(commandParts[2]), commandParts[3], commandParts[4]);
         }
         else if (commandParts.Length == 1 && commandParts[0] == "balance")
         {
@@ -34,6 +42,12 @@ class Program
         transactions.Add(transaction);
         Console.WriteLine($"Utgiften har lagts till: {amount}kr för {category} ({description})");
     }
+    static void AddIncome(decimal amount, string category, string description)
+    {
+        Transaction transaction = new Transaction(amount, category, description);
+        transactions.Add(transaction);
+        Console.WriteLine($"Inkomsten har lagts till: {amount}kr för {category} ({description})");
+    }
     static void ShowBalance()
     {
         decimal totalIncome = 0;
@@ -49,14 +63,14 @@ class Program
             {
                 totalExpense += transactions[i].Amount;
             }
-
-            decimal balance = totalIncome + totalExpense;
-            Console.WriteLine("Ditt saldo är: " + balance + "kr");
-            Console.WriteLine("totala inkomster: " + totalIncome + "kr");
-            Console.WriteLine("totala utgifter: " + totalExpense + "kr");
         }
+
+        decimal balance = totalIncome + totalExpense;
+        Console.WriteLine("totala inkomster: " + totalIncome + "kr");
+        Console.WriteLine("totala utgifter: " + totalExpense + "kr");
+        Console.WriteLine("Ditt saldo är: " + balance + "kr");
     }
-    static void Main(in string[] args)
+    static void Main(string[] args)
     {
         Console.WriteLine("Välkommen till Budgeteringprogrammet! Skriv 'exit' för att avsluta.");
 
