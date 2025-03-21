@@ -1,0 +1,15 @@
+C:\Users\marre\Documents\VscProjects\c#-Projects\BudgetPlanering\bin\Debug\net9.0\BudgetPlanering.exe
+C:\Users\marre\Documents\VscProjects\c#-Projects\BudgetPlanering\bin\Debug\net9.0\BudgetPlanering.deps.json
+C:\Users\marre\Documents\VscProjects\c#-Projects\BudgetPlanering\bin\Debug\net9.0\BudgetPlanering.runtimeconfig.json
+C:\Users\marre\Documents\VscProjects\c#-Projects\BudgetPlanering\bin\Debug\net9.0\BudgetPlanering.dll
+C:\Users\marre\Documents\VscProjects\c#-Projects\BudgetPlanering\bin\Debug\net9.0\BudgetPlanering.pdb
+C:\Users\marre\Documents\VscProjects\c#-Projects\BudgetPlanering\obj\Debug\net9.0\BudgetPlanering.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\marre\Documents\VscProjects\c#-Projects\BudgetPlanering\obj\Debug\net9.0\BudgetPlanering.AssemblyInfoInputs.cache
+C:\Users\marre\Documents\VscProjects\c#-Projects\BudgetPlanering\obj\Debug\net9.0\BudgetPlanering.AssemblyInfo.cs
+C:\Users\marre\Documents\VscProjects\c#-Projects\BudgetPlanering\obj\Debug\net9.0\BudgetPlanering.csproj.CoreCompileInputs.cache
+C:\Users\marre\Documents\VscProjects\c#-Projects\BudgetPlanering\obj\Debug\net9.0\BudgetPlanering.sourcelink.json
+C:\Users\marre\Documents\VscProjects\c#-Projects\BudgetPlanering\obj\Debug\net9.0\BudgetPlanering.dll
+C:\Users\marre\Documents\VscProjects\c#-Projects\BudgetPlanering\obj\Debug\net9.0\refint\BudgetPlanering.dll
+C:\Users\marre\Documents\VscProjects\c#-Projects\BudgetPlanering\obj\Debug\net9.0\BudgetPlanering.pdb
+C:\Users\marre\Documents\VscProjects\c#-Projects\BudgetPlanering\obj\Debug\net9.0\BudgetPlanering.genruntimeconfig.cache
+C:\Users\marre\Documents\VscProjects\c#-Projects\BudgetPlanering\obj\Debug\net9.0\ref\BudgetPlanering.dll
