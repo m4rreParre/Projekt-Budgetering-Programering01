@@ -4,7 +4,7 @@ using System.IO;
 
 class Program
 {
-    //TODO Make description optional
+    //TODO Make description optional - kinda done not fully needs to have an default value unfortunately 
     //TODO filters in listbalance syntax list balance sort_by="value" sort="highest", list balance sort_by="value" sort="lowest"
     //TODO filter by category
     //TODO filter by date - last month, last week, last year
@@ -29,6 +29,7 @@ class Program
     static void HandleCommand(string command)
     {
         command = command.Trim().ToLower();
+        Console.WriteLine(command);
         string[] commandParts = command.Split(' ');
         if (commandParts[0] == "exit")
         {
@@ -46,12 +47,12 @@ class Program
         }
         else if (commandParts.Length > 3 && commandParts[0] == "income" && commandParts[1] == "add")
         {
-            if (commandParts.Length != 4)
+            if (commandParts.Length == 4)
             {
                 AddIncome(decimal.Parse(commandParts[2]), commandParts[3]);
-                Console.WriteLine($"inkomsten har lagts till: {commandParts[2]}kr för {commandParts[3]} ({commandParts[4]})");
+                Console.WriteLine($"inkomsten har lagts till: {commandParts[2]}kr för {commandParts[3]}");
             }
-            else if (commandParts.Length > 4)
+            else if (commandParts.Length == 5)
             {
                 AddIncome(decimal.Parse(commandParts[2]), commandParts[3], commandParts[4]);
                 Console.WriteLine($"inkomsten har lagts till: {commandParts[2]}kr för {commandParts[3]} ({commandParts[4]})");
@@ -120,9 +121,11 @@ class Program
 
         while (true)
         {
-            Console.Write("> ");
+            Console.Write(">");
             string command = Console.ReadLine();
+
             HandleCommand(command);
+
         }
     }
 }
