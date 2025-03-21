@@ -4,7 +4,28 @@ using System.IO;
 
 class Program
 {
+    //TODO Make description optional
+    //TODO filters in listbalance
+    //TODO filter by category
+    //TODO filter by date
+    //TODO filter by amount less / most
+
+    //TODO add a way to add many transactions at once
+    //TODO add a way to remove transactions
+    //TODO add a way to edit transactions
+    //TODO add a way to save transactions to a file
+    //TODO add a way to load transactions from a file
     static List<Transaction> transactions = new List<Transaction>();
+    static void introduction()
+    {
+        Console.WriteLine("Välkommen till Budgeteringprogrammet! Skriv 'exit' för att avsluta.");
+        Console.WriteLine("lista över kommandon: ");
+        Console.WriteLine("expense add <belopp> <kategori> <beskrivning>");
+        Console.WriteLine("income add <belopp> <kategori> <beskrivning>");
+        Console.WriteLine("list balance - för att visa alla transaktioner");
+        Console.WriteLine("balance - för att visa ditt saldo");
+        Console.WriteLine("clear - för att ränsa skärmen");
+    }
     static void HandleCommand(string command)
     {
         command = command.Trim().ToLower();
@@ -16,12 +37,7 @@ class Program
         else if (commandParts[0] == "clear")
         {
             Console.Clear();
-            Console.WriteLine("Välkommen till Budgeteringprogrammet! Skriv 'exit' för att avsluta.");
-            Console.WriteLine("lista över kommandon: ");
-            Console.WriteLine("expense add <belopp> <kategori> <beskrivning>");
-            Console.WriteLine("income add <belopp> <kategori> <beskrivning>");
-            Console.WriteLine("balance - för att visa ditt saldo");
-            Console.WriteLine("clear - för att ränsa skärmen");
+            introduction();
         }
         else if (commandParts.Length > 3 && commandParts[0] == "expense" && commandParts[1] == "add")
         {
@@ -36,12 +52,15 @@ class Program
         {
             ShowBalance();
         }
+        else if (commandParts.Length < 3 && commandParts[0] == "list" && commandParts[1] == "balance")
+        {
+            ListBalance();
+        }
         else
         {
             Console.WriteLine("Okänt kommando");
         }
     }
-
     static void AddExpense(decimal amount, string category, string description)
     {
         Transaction transaction = new Transaction(-amount, category, description);
@@ -76,14 +95,16 @@ class Program
         Console.WriteLine("totala utgifter: " + totalExpense + "kr");
         Console.WriteLine("Ditt saldo är: " + balance + "kr");
     }
+    static void ListBalance()
+    {
+        for (int i = 0; i < transactions.Count; i++)
+        {
+            Console.WriteLine($"{transactions[i].Date} {transactions[i].Amount}kr {transactions[i].Category} ({transactions[i].Description})");
+        }
+    }
     static void Main(string[] args)
     {
-        Console.WriteLine("Välkommen till Budgeteringprogrammet! Skriv 'exit' för att avsluta.");
-        Console.WriteLine("lista över kommandon: ");
-        Console.WriteLine("expense add <belopp> <kategori> <beskrivning>");
-        Console.WriteLine("income add <belopp> <kategori> <beskrivning>");
-        Console.WriteLine("balance - för att visa ditt saldo");
-        Console.WriteLine("clear - för att ränsa skärmen");
+        introduction();
 
         while (true)
         {
