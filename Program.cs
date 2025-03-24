@@ -4,7 +4,8 @@ using System.IO;
 
 class Program
 {
-    //TODO Make description optional - kinda done not fully needs to have an default value unfortunately 
+    //TODO error handling for input of string instead of int in belopp (example: "200kr" - ERROR)
+     
     //TODO filters in listbalance syntax list balance sort_by="value" sort="highest", list balance sort_by="value" sort="lowest"
     //TODO filter by category
     //TODO filter by date - last month, last week, last year
@@ -45,9 +46,10 @@ class Program
             {
                 AddExpense(decimal.Parse(commandParts[2]), commandParts[3]);
             }
-            else if (commandParts.Length == 5)
+            else if (commandParts.Length > 4)
             {
-                AddExpense(decimal.Parse(commandParts[2]), commandParts[3], commandParts[4]);
+                string description = JoinFromIndex(4, commandParts);
+                AddExpense(decimal.Parse(commandParts[2]), commandParts[3], description);
             }
 
         }
@@ -57,9 +59,10 @@ class Program
             {
                 AddIncome(decimal.Parse(commandParts[2]), commandParts[3]);
             }
-            else if (commandParts.Length == 5)
+            else if (commandParts.Length > 4)
             {
-                AddIncome(decimal.Parse(commandParts[2]), commandParts[3], commandParts[4]);
+                string description = JoinFromIndex(4, commandParts);
+                AddIncome(decimal.Parse(commandParts[2]), commandParts[3], description);
             }
 
         }
@@ -76,16 +79,40 @@ class Program
             Console.WriteLine("Okänt kommando");
         }
     }
-    static void AddExpense(decimal amount, string category, string description = "no description")
+    static string JoinFromIndex(int index, string[] strings)
+    {
+        string result = "";
+        for (int i = index; i < strings.Length; i++)
+        {
+            result += strings[i];
+            if (i < strings.Length - 1)
+            {
+                result += " ";
+            }
+        }
+        return result;
+    }
+
+    static void AddExpense(decimal amount, string category, string description = null)
     {
         Transaction transaction = new Transaction(-amount, category, description);
         transactions.Add(transaction);
+        if (description == null)
+        {
+            Console.WriteLine($"Utgiften har lagts till: {amount}kr för {category}");
+            return;
+        }
         Console.WriteLine($"Utgiften har lagts till: {amount}kr för {category} ({description})");
     }
-    static void AddIncome(decimal amount, string category, string description = "no description")
+    static void AddIncome(decimal amount, string category, string description = null)
     {
         Transaction transaction = new Transaction(amount, category, description);
         transactions.Add(transaction);
+        if (description == null)
+        {
+            Console.WriteLine($"Inkomsten har lagts till: {amount}kr för {category}");
+            return;
+        }
         Console.WriteLine($"Inkomsten har lagts till: {amount}kr för {category} ({description})");
     }
     static void ShowBalance()
@@ -114,6 +141,11 @@ class Program
     {
         for (int i = 0; i < transactions.Count; i++)
         {
+            if (transactions[i].Description == null)
+            {
+                Console.WriteLine($"{transactions[i].Date} {transactions[i].Amount}kr {transactions[i].Category}");
+                continue;
+            }
             Console.WriteLine($"{transactions[i].Date} {transactions[i].Amount}kr {transactions[i].Category} ({transactions[i].Description})");
         }
     }
@@ -121,13 +153,10 @@ class Program
     {
         introduction();
 
-        Console.WriteLine();
-
         while (true)
         {
             Console.Write(">");
             string command = Console.ReadLine();
-
             HandleCommand(command);
 
         }
