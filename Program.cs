@@ -29,7 +29,8 @@ class Program
         Console.WriteLine("income add <belopp> <kategori> <beskrivning>");
         Console.WriteLine("list balance - för att visa alla transaktioner");
         Console.WriteLine("balance - för att visa ditt saldo");
-        System.Console.WriteLine("remove <id> - för att ta bort en transaktion");
+        Console.WriteLine("remove <id> - för att ta bort en transaktion");
+        Console.WriteLine("list balance filter <kategori>");
         Console.WriteLine("clear - för att ränsa skärmen");
     }
     static void HandleCommand(string command)
@@ -234,7 +235,7 @@ class Program
                 }
                 Console.WriteLine($"id:{transactions[i].Id} {transactions[i].Date} {transactions[i].Amount}kr {transactions[i].Category} ({transactions[i].Description})");
             }
-            else
+            else if(transactions[i].Category != category)
             {
                 Console.WriteLine("skriv in en kategori som finns");
             }
