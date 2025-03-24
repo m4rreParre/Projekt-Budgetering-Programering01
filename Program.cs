@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 
 class Program
 {
-    //TODO error handling for input of string instead of int in belopp (example: "200kr" - ERROR)
-     
+    //NOTES - WHEN FILTERING FILTER FROM ONE LIST TO ANOTHER AND THEN PRINT THE NEW LIST BECAUSE IF YOU FILTER FROM THE ORIGINAL LIST YOU WILL LOSE DATA
+
     //TODO filters in listbalance syntax list balance sort_by="value" sort="highest", list balance sort_by="value" sort="lowest"
     //TODO filter by category
     //TODO filter by date - last month, last week, last year
@@ -16,7 +17,10 @@ class Program
     //TODO add a way to edit transactions
     //TODO add a way to save transactions to a file
     //TODO add a way to load transactions from a file
+    //TODO add a monthly budget calculator that shows how much you can spend each day to stay within budget (watches how many days left in the month)
     static List<Transaction> transactions = new List<Transaction>();
+    static Regex LetterFilter = new Regex(@"[a-zA-Z]");
+
     static void introduction()
     {
         Console.WriteLine("Välkommen till Budgeteringprogrammet! Skriv 'exit' för att avsluta.");
@@ -25,6 +29,7 @@ class Program
         Console.WriteLine("income add <belopp> <kategori> <beskrivning>");
         Console.WriteLine("list balance - för att visa alla transaktioner");
         Console.WriteLine("balance - för att visa ditt saldo");
+        System.Console.WriteLine("remove <id> - för att ta bort en transaktion");
         Console.WriteLine("clear - för att ränsa skärmen");
     }
     static void HandleCommand(string command)
@@ -42,7 +47,13 @@ class Program
         }
         else if (commandParts.Length > 3 && commandParts[0] == "expense" && commandParts[1] == "add")
         {
-            if (commandParts.Length == 4)
+            bool containsLetter = LetterFilter.IsMatch(commandParts[2]);
+            if (containsLetter)
+            {
+                Console.WriteLine("Felaktig inmatning, skriv in beloppet utan valutan eller bokstäver");
+                return;
+            }
+            else if (commandParts.Length == 4)
             {
                 AddExpense(decimal.Parse(commandParts[2]), commandParts[3]);
             }
@@ -53,9 +64,16 @@ class Program
             }
 
         }
+
         else if (commandParts.Length > 3 && commandParts[0] == "income" && commandParts[1] == "add")
         {
-            if (commandParts.Length == 4)
+            bool containsLetter = LetterFilter.IsMatch(commandParts[2]);
+            if (containsLetter)
+            {
+                Console.WriteLine("Felaktig inmatning, skriv in beloppet utan valutan eller bokstäver");
+                return;
+            }
+            else if (commandParts.Length == 4)
             {
                 AddIncome(decimal.Parse(commandParts[2]), commandParts[3]);
             }
@@ -73,6 +91,14 @@ class Program
         else if (commandParts.Length < 3 && commandParts[0] == "list" && commandParts[1] == "balance")
         {
             ListBalance();
+        }
+        else if (commandParts.Length == 2 && commandParts[0] == "remove")
+        {
+            DeleteTransaction(int.Parse(commandParts[1]));
+        }
+        else if(commandParts.Length == 4 && commandParts[0] == "list" && commandParts[1] == "balance"  && commandParts[2] == "filter")
+        {
+            CategoryFilter(commandParts[3]);
         }
         else
         {
@@ -92,7 +118,6 @@ class Program
         }
         return result;
     }
-
     static void AddExpense(decimal amount, string category, string description = null)
     {
         Transaction transaction = new Transaction(-amount, category, description);
@@ -143,22 +168,88 @@ class Program
         {
             if (transactions[i].Description == null)
             {
-                Console.WriteLine($"{transactions[i].Date} {transactions[i].Amount}kr {transactions[i].Category}");
+                Console.WriteLine($"id:{transactions[i].Id} {transactions[i].Date} {transactions[i].Amount}kr {transactions[i].Category}");
                 continue;
             }
-            Console.WriteLine($"{transactions[i].Date} {transactions[i].Amount}kr {transactions[i].Category} ({transactions[i].Description})");
+            Console.WriteLine($"id:{transactions[i].Id} {transactions[i].Date} {transactions[i].Amount}kr {transactions[i].Category} ({transactions[i].Description})");
         }
     }
-    static void Main(string[] args)
+    static void DeleteTransaction(int id)
     {
-        introduction();
-
-        while (true)
+        for (int i = 0; i < transactions.Count; i++)
         {
-            Console.Write(">");
-            string command = Console.ReadLine();
-            HandleCommand(command);
+            if (transactions[i].Id == id)
+            {
+                transactions.RemoveAt(i);
+                Console.WriteLine("Transaktionen har tagits bort");
+                return;
+            }
+        }
+    }
+    static void SortPick(string sort_by, string sort)
+    {
+        if (sort_by == "value" && sort == "highest")
+        {
+            valueSorter("highest");
+        }
+        else if (sort_by == "value" && sort == "lowest")
+        {
+            valueSorter("lowest");
+        }
+        else if(sort_by == "date" && sort == "newest")
+        {
+
+        }
+        else if(sort_by == "date" && sort == "oldest")
+        {
+
+        }
+        else if(sort_by == "category")
+        {
 
         }
     }
-}
+    static void valueSorter(string sort)
+    {
+        //TODO add two different sorters, one for highest and one for lowest
+        if(sort == "highest")
+        {
+            
+        }
+        else if(sort == "lowest")
+        {
+
+        }
+    }
+    static void CategoryFilter(string category)
+    {
+        for (int i = 0; i < transactions.Count; i++)
+        {
+            if (transactions[i].Category == category)
+            {
+                if(transactions[i].Description == null)
+                {
+                    Console.WriteLine($"id:{transactions[i].Id} {transactions[i].Date} {transactions[i].Amount}kr {transactions[i].Category}");
+                    continue;
+                }
+                Console.WriteLine($"id:{transactions[i].Id} {transactions[i].Date} {transactions[i].Amount}kr {transactions[i].Category} ({transactions[i].Description})");
+            }
+            else
+            {
+                Console.WriteLine("skriv in en kategori som finns");
+            }
+        }
+    }
+        static void Main(string[] args)
+        {
+            introduction();
+
+            while (true)
+            {
+                Console.Write(">");
+                string command = Console.ReadLine();
+                HandleCommand(command);
+
+            }
+        }
+    }
