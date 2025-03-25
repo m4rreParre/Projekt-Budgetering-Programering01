@@ -30,7 +30,7 @@ class Program
         Console.WriteLine("list balance - för att visa alla transaktioner");
         Console.WriteLine("balance - för att visa ditt saldo");
         Console.WriteLine("remove <id> - för att ta bort en transaktion");
-        Console.WriteLine("list balance sortBy <kategori> - för att visa transaktioner efter en viss kategori");
+        Console.WriteLine("list balance sortby <value|category> <highest/lowest |kategorinamn> - för att sortera transaktioner");
         Console.WriteLine("clear - för att ränsa skärmen");
     }
     static void HandleCommand(string command)
@@ -97,9 +97,9 @@ class Program
         {
             DeleteTransaction(int.Parse(commandParts[1]));
         }
-        else if (commandParts.Length == 4 && commandParts[0] == "list" && commandParts[1] == "balance" && commandParts[2] == "sortby")
+        else if (commandParts.Length == 5 && commandParts[0] == "list" && commandParts[1] == "balance" && commandParts[2] == "sortby")
         {
-            CategorySorter(commandParts[3]);
+            SortingHandler(commandParts[3], commandParts[4]);
         }
         else
         {
@@ -187,7 +187,7 @@ class Program
             }
         }
     }
-    static void SortPick(string sort_by, string sort)
+    static void SortingHandler(string sort_by, string sort)
     {
         if (sort_by == "value" && sort == "highest")
         {
@@ -207,7 +207,7 @@ class Program
         }
         else if (sort_by == "category")
         {
-
+            CategorySorter(sort);
         }
     }
     static void valueSorter(string sort)
@@ -223,21 +223,47 @@ class Program
                     if (transactions[j].Amount > transactions[j + 1].Amount)
                     {
                         Transaction temp = ValueSortedTransactions[j];
-                        transactions[j] = transactions[j + 1];
-                        transactions[j + 1] = temp;
+                        ValueSortedTransactions[j] = ValueSortedTransactions[j + 1];
+                        ValueSortedTransactions[j + 1] = temp;
                     }
                 }
+            }
+            for(int i = 0; i < ValueSortedTransactions.Count; i++)
+            {
+                if (ValueSortedTransactions[i].Description == null)
+                {
+                    Console.WriteLine($"id:{ValueSortedTransactions[i].Id} {ValueSortedTransactions[i].Date} {ValueSortedTransactions[i].Amount}kr {ValueSortedTransactions[i].Category}");
+                    continue;
+                }
+                Console.WriteLine($"id:{ValueSortedTransactions[i].Id} {ValueSortedTransactions[i].Date} {ValueSortedTransactions[i].Amount}kr {ValueSortedTransactions[i].Category} ({ValueSortedTransactions[i].Description})");
             }
         }
         else if (sort == "lowest")
         {
-
+            for (int i = 0; i < transactions.Count; i++)
+            {
+                for (int j = 0; j < transactions.Count - 1; j++)
+                {
+                    if (transactions[j].Amount < transactions[j + 1].Amount)
+                    {
+                        Transaction temp = ValueSortedTransactions[j];
+                        ValueSortedTransactions[j] = ValueSortedTransactions[j + 1];
+                        ValueSortedTransactions[j + 1] = temp;
+                    }
+                }
+            }
+            for (int i = 0; i < ValueSortedTransactions.Count; i++)
+            {
+                if (ValueSortedTransactions[i].Description == null)
+                {
+                    Console.WriteLine($"id:{ValueSortedTransactions[i].Id} {ValueSortedTransactions[i].Date} {ValueSortedTransactions[i].Amount}kr {ValueSortedTransactions[i].Category}");
+                    continue;
+                }
+                Console.WriteLine($"id:{ValueSortedTransactions[i].Id} {ValueSortedTransactions[i].Date} {ValueSortedTransactions[i].Amount}kr {ValueSortedTransactions[i].Category} ({ValueSortedTransactions[i].Description})");
+            }
         }
     }
-    static void bubblesort()
-    {
 
-    }
     static bool CategoryIsInList(string category)
     {
         for (int i = 0; i < transactions.Count; i++)
