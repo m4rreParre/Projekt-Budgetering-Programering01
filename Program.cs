@@ -30,7 +30,7 @@ class Program
         Console.WriteLine("list balance - för att visa alla transaktioner");
         Console.WriteLine("balance - för att visa ditt saldo");
         Console.WriteLine("remove <id> - för att ta bort en transaktion");
-        Console.WriteLine("list balance filter <kategori>");
+        Console.WriteLine("list balance sortBy <kategori> - för att visa transaktioner efter en viss kategori");
         Console.WriteLine("clear - för att ränsa skärmen");
     }
     static void HandleCommand(string command)
@@ -97,7 +97,7 @@ class Program
         {
             DeleteTransaction(int.Parse(commandParts[1]));
         }
-        else if(commandParts.Length == 4 && commandParts[0] == "list" && commandParts[1] == "balance"  && commandParts[2] == "sortBy")
+        else if (commandParts.Length == 4 && commandParts[0] == "list" && commandParts[1] == "balance" && commandParts[2] == "sortby")
         {
             CategorySorter(commandParts[3]);
         }
@@ -197,60 +197,93 @@ class Program
         {
             valueSorter("lowest");
         }
-        else if(sort_by == "date" && sort == "newest")
+        else if (sort_by == "date" && sort == "newest")
         {
 
         }
-        else if(sort_by == "date" && sort == "oldest")
+        else if (sort_by == "date" && sort == "oldest")
         {
 
         }
-        else if(sort_by == "category")
+        else if (sort_by == "category")
         {
 
         }
     }
     static void valueSorter(string sort)
     {
-        //TODO add two different sorters, one for highest and one for lowest
-        if(sort == "highest")
+
+        List<Transaction> ValueSortedTransactions = new List<Transaction>();
+        if (sort == "highest")
         {
-            
+            for (int i = 0; i < transactions.Count; i++)
+            {
+                for (int j = 0; j < transactions.Count - 1; j++)
+                {
+                    if (transactions[j].Amount > transactions[j + 1].Amount)
+                    {
+                        Transaction temp = ValueSortedTransactions[j];
+                        transactions[j] = transactions[j + 1];
+                        transactions[j + 1] = temp;
+                    }
+                }
+            }
         }
-        else if(sort == "lowest")
+        else if (sort == "lowest")
         {
 
         }
     }
-    static void CategorySorter(string category)
+    static void bubblesort()
+    {
+
+    }
+    static bool CategoryIsInList(string category)
     {
         for (int i = 0; i < transactions.Count; i++)
         {
             if (transactions[i].Category == category)
             {
-                if(transactions[i].Description == null)
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        return true;
+    }
+    static void CategorySorter(string category)
+    {
+        bool CategoryNotFound = CategoryIsInList(category);
+        for (int i = 0; i < transactions.Count; i++)
+        {
+            int j = i + 1;
+            if (transactions[i].Category == category)
+            {
+                if (transactions[i].Description == null)
                 {
                     Console.WriteLine($"id:{transactions[i].Id} {transactions[i].Date} {transactions[i].Amount}kr {transactions[i].Category}");
                     continue;
                 }
                 Console.WriteLine($"id:{transactions[i].Id} {transactions[i].Date} {transactions[i].Amount}kr {transactions[i].Category} ({transactions[i].Description})");
             }
-            else if(transactions[i].Category != category)
+            else if (CategoryNotFound)
             {
                 Console.WriteLine("skriv in en kategori som finns");
             }
         }
     }
-        static void Main(string[] args)
+    static void Main(string[] args)
+    {
+        introduction();
+
+        while (true)
         {
-            introduction();
+            Console.Write(">");
+            string command = Console.ReadLine();
+            HandleCommand(command);
 
-            while (true)
-            {
-                Console.Write(">");
-                string command = Console.ReadLine();
-                HandleCommand(command);
-
-            }
         }
+    }
 }
