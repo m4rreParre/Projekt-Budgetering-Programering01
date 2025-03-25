@@ -7,6 +7,9 @@ class Program
 {
     //NOTES - WHEN FILTERING FILTER FROM ONE LIST TO ANOTHER AND THEN PRINT THE NEW LIST BECAUSE IF YOU FILTER FROM THE ORIGINAL LIST YOU WILL LOSE DATA
 
+    //TODO FIX FILTER BY VALUE ERROR :II 
+    //TODO FIX CATEGORY ERROR HANDLING :II
+
     //TODO filters in listbalance syntax list balance sort_by="value" sort="highest", list balance sort_by="value" sort="lowest"
     //TODO filter by category
     //TODO filter by date - last month, last week, last year
@@ -228,7 +231,7 @@ class Program
                     }
                 }
             }
-            for(int i = 0; i < ValueSortedTransactions.Count; i++)
+            for (int i = 0; i < ValueSortedTransactions.Count; i++)
             {
                 if (ValueSortedTransactions[i].Description == null)
                 {
