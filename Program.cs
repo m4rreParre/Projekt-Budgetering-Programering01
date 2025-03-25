@@ -97,9 +97,9 @@ class Program
         {
             DeleteTransaction(int.Parse(commandParts[1]));
         }
-        else if(commandParts.Length == 4 && commandParts[0] == "list" && commandParts[1] == "balance"  && commandParts[2] == "filter")
+        else if(commandParts.Length == 4 && commandParts[0] == "list" && commandParts[1] == "balance"  && commandParts[2] == "sortBy")
         {
-            CategoryFilter(commandParts[3]);
+            CategorySorter(commandParts[3]);
         }
         else
         {
@@ -222,7 +222,7 @@ class Program
 
         }
     }
-    static void CategoryFilter(string category)
+    static void CategorySorter(string category)
     {
         for (int i = 0; i < transactions.Count; i++)
         {
@@ -253,4 +253,4 @@ class Program
 
             }
         }
-    }
+}
