@@ -5,15 +5,14 @@ using System.Text.RegularExpressions;
 
 class Program
 {
-    //NOTES - WHEN FILTERING FILTER FROM ONE LIST TO ANOTHER AND THEN PRINT THE NEW LIST BECAUSE IF YOU FILTER FROM THE ORIGINAL LIST YOU WILL LOSE DATA
+    //TODO Add a sortby parameter to valuesorter so you can just sort and show the incomes or expenses
+    //TODO change sortingalgorithm to a faster one then bubble sort. 
+    //TODO be able to list just transactions of a sertain number like only 5 latest
 
-    //TODO FIX FILTER BY VALUE ERROR :II 
-    //TODO FIX CATEGORY ERROR HANDLING :II
 
     //TODO filters in listbalance syntax list balance sort_by="value" sort="highest", list balance sort_by="value" sort="lowest"
-    //TODO filter by category
     //TODO filter by date - last month, last week, last year
-    //TODO filter by amount less / most
+
 
     //TODO add a way to add many transactions at once
     //TODO add a way to remove transactions
@@ -22,6 +21,8 @@ class Program
     //TODO add a way to load transactions from a file
     //TODO add a monthly budget calculator that shows how much you can spend each day to stay within budget (watches how many days left in the month)
     static List<Transaction> transactions = new List<Transaction>();
+    static List<Transaction> Incomes = new List<Transaction>();
+    static List<Transaction> Expenses = new List<Transaction>();
     static Regex LetterFilter = new Regex(@"[a-zA-Z]");
 
     static void introduction()
@@ -30,10 +31,10 @@ class Program
         Console.WriteLine("lista över kommandon: ");
         Console.WriteLine("expense add <belopp> <kategori> <beskrivning>");
         Console.WriteLine("income add <belopp> <kategori> <beskrivning>");
-        Console.WriteLine("list balance - för att visa alla transaktioner");
+        Console.WriteLine("list transactions - för att visa alla transaktioner");
         Console.WriteLine("balance - för att visa ditt saldo");
         Console.WriteLine("remove <id> - för att ta bort en transaktion");
-        Console.WriteLine("list balance sortby <value|category> <highest/lowest |kategorinamn> - för att sortera transaktioner");
+        Console.WriteLine("list transactions sortby <value|category> <highest/lowest |kategorinamn> - för att sortera transaktioner");
         Console.WriteLine("clear - för att ränsa skärmen");
     }
     static void HandleCommand(string command)
@@ -92,17 +93,25 @@ class Program
         {
             ShowBalance();
         }
-        else if (commandParts.Length < 3 && commandParts[0] == "list" && commandParts[1] == "balance")
+        else if (commandParts.Length < 3 && commandParts[0] == "list" && commandParts[1] == "transactions")
         {
-            ListBalance();
+            ListTransactions();
         }
         else if (commandParts.Length == 2 && commandParts[0] == "remove")
         {
             DeleteTransaction(int.Parse(commandParts[1]));
         }
-        else if (commandParts.Length == 5 && commandParts[0] == "list" && commandParts[1] == "balance" && commandParts[2] == "sortby")
+        else if (commandParts.Length == 5 && commandParts[0] == "list" && commandParts[1] == "transactions" && commandParts[2] == "sortby")
         {
             SortingHandler(commandParts[3], commandParts[4]);
+        }
+        else if (commandParts.Length == 2 && commandParts[0] == "list" && commandParts[1] == "expenses")
+        {
+            ListExpense();
+        }
+        else if (commandParts.Length == 2 && commandParts[0] == "list" && commandParts[1] == "incomes")
+        {
+            ListIncome();
         }
         else
         {
@@ -166,7 +175,7 @@ class Program
         Console.WriteLine("totala utgifter: " + totalExpense + "kr");
         Console.WriteLine("Ditt saldo är: " + balance + "kr");
     }
-    static void ListBalance()
+    static void ListTransactions()
     {
         for (int i = 0; i < transactions.Count; i++)
         {
@@ -194,11 +203,11 @@ class Program
     {
         if (sort_by == "value" && sort == "highest")
         {
-            valueSorter("highest");
+            ValueSorter("highest");
         }
         else if (sort_by == "value" && sort == "lowest")
         {
-            valueSorter("lowest");
+            ValueSorter("lowest");
         }
         else if (sort_by == "date" && sort == "newest")
         {
@@ -213,25 +222,24 @@ class Program
             CategorySorter(sort);
         }
     }
-    static void valueSorter(string sort)
+    static void ValueSorter(string sort)
     {
-
-        List<Transaction> ValueSortedTransactions = new List<Transaction>();
+        List<Transaction> ValueSortedTransactions = new List<Transaction>(transactions);
         if (sort == "highest")
         {
-            for (int i = 0; i < transactions.Count; i++)
+            for(int i = 0; i < ValueSortedTransactions.Count; i++)
             {
-                for (int j = 0; j < transactions.Count - 1; j++)
+                for(int j = i + 1; j < ValueSortedTransactions.Count; j++)
                 {
-                    if (transactions[j].Amount > transactions[j + 1].Amount)
+                    if(ValueSortedTransactions[i].Amount < ValueSortedTransactions[j].Amount)
                     {
-                        Transaction temp = ValueSortedTransactions[j];
-                        ValueSortedTransactions[j] = ValueSortedTransactions[j + 1];
-                        ValueSortedTransactions[j + 1] = temp;
+                        Transaction temp = ValueSortedTransactions[i];
+                        ValueSortedTransactions[i] = ValueSortedTransactions[j];
+                        ValueSortedTransactions[j] = temp;
                     }
                 }
             }
-            for (int i = 0; i < ValueSortedTransactions.Count; i++)
+            for(int i = 0; i < ValueSortedTransactions.Count; i++)
             {
                 if (ValueSortedTransactions[i].Description == null)
                 {
@@ -243,19 +251,19 @@ class Program
         }
         else if (sort == "lowest")
         {
-            for (int i = 0; i < transactions.Count; i++)
+            for(int i = 0; i < ValueSortedTransactions.Count; i++)
             {
-                for (int j = 0; j < transactions.Count - 1; j++)
+                for(int j = i + 1; j < ValueSortedTransactions.Count; j++)
                 {
-                    if (transactions[j].Amount < transactions[j + 1].Amount)
+                    if(ValueSortedTransactions[i].Amount > ValueSortedTransactions[j].Amount)
                     {
-                        Transaction temp = ValueSortedTransactions[j];
-                        ValueSortedTransactions[j] = ValueSortedTransactions[j + 1];
-                        ValueSortedTransactions[j + 1] = temp;
+                        Transaction temp = ValueSortedTransactions[i];
+                        ValueSortedTransactions[i] = ValueSortedTransactions[j];
+                        ValueSortedTransactions[j] = temp;
                     }
                 }
             }
-            for (int i = 0; i < ValueSortedTransactions.Count; i++)
+            for(int i = 0; i < ValueSortedTransactions.Count; i++)
             {
                 if (ValueSortedTransactions[i].Description == null)
                 {
@@ -266,7 +274,50 @@ class Program
             }
         }
     }
+    static void IncomeAndOutcomeSeperator()
+    {
+        for (int i = 0; i < transactions.Count; i++)
+        {
+            if (transactions[i].Amount > 0)
+            {
+                Incomes.Add(transactions[i]);
+            }
+            else if (transactions[i].Amount < 0)
+            {
+                Expenses.Add(transactions[i]);
+            }
+        }
+    }
+    static void ListIncome()
+    {
+        Incomes.Clear();
 
+        IncomeAndOutcomeSeperator();
+        for (int i = 0; i < Incomes.Count; i++)
+        {
+            if (Incomes[i].Description == null)
+            {
+                Console.WriteLine($"id:{Incomes[i].Id} {Incomes[i].Date} {Incomes[i].Amount}kr {Incomes[i].Category}");
+                continue;
+            }
+            Console.WriteLine($"id:{Incomes[i].Id} {Incomes[i].Date} {Incomes[i].Amount}kr {Incomes[i].Category} ({Incomes[i].Description})");
+        }
+    }
+    static void ListExpense()
+    {
+        Expenses.Clear();
+
+        IncomeAndOutcomeSeperator();
+        for (int i = 0; i < Expenses.Count; i++)
+        {
+            if (Expenses[i].Description == null)
+            {
+                Console.WriteLine($"id:{Expenses[i].Id} {Expenses[i].Date} {Expenses[i].Amount}kr {Expenses[i].Category}");
+                continue;
+            }
+            Console.WriteLine($"id:{Expenses[i].Id} {Expenses[i].Date} {Expenses[i].Amount}kr {Expenses[i].Category} ({Expenses[i].Description})");
+        }
+    }
     static bool CategoryIsInList(string category)
     {
         for (int i = 0; i < transactions.Count; i++)
