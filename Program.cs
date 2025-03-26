@@ -300,6 +300,7 @@ class Program
             else if (CategoryNotFound)
             {
                 Console.WriteLine("skriv in en kategori som finns");
+                return;
             }
         }
     }
