@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Globalization;
+
 
 class Program
 {
+    //fixed so both "," and "." are accepted
     //TODO Add a sortby parameter to valuesorter so you can just sort and show the incomes or expenses
     //TODO change sortingalgorithm to a faster one then bubble sort. 
     //TODO be able to list just transactions of a sertain number like only 5 latest
-
 
     //TODO filters in listbalance syntax list balance sort_by="value" sort="highest", list balance sort_by="value" sort="lowest"
     //TODO filter by date - last month, last week, last year
@@ -20,10 +22,14 @@ class Program
     //TODO add a way to save transactions to a file
     //TODO add a way to load transactions from a file
     //TODO add a monthly budget calculator that shows how much you can spend each day to stay within budget (watches how many days left in the month)
+
+    static CultureInfo culture = CultureInfo.CurrentCulture;
+    static string UsedDecimalType = culture.NumberFormat.NumberDecimalSeparator;
     static List<Transaction> transactions = new List<Transaction>();
     static List<Transaction> Incomes = new List<Transaction>();
     static List<Transaction> Expenses = new List<Transaction>();
     static Regex LetterFilter = new Regex(@"[a-zA-Z]");
+
 
     static void introduction()
     {
@@ -52,7 +58,16 @@ class Program
         }
         else if (commandParts.Length > 3 && commandParts[0] == "expense" && commandParts[1] == "add")
         {
-            bool containsLetter = LetterFilter.IsMatch(commandParts[2]);
+            string InputAmount = commandParts[2];
+            bool containsLetter = LetterFilter.IsMatch(InputAmount);
+            if (UsedDecimalType == "," && InputAmount.Contains("."))
+            {
+                InputAmount = InputAmount.Replace(".", ",");
+            }
+            else if (UsedDecimalType == "." && !InputAmount.Contains(","))
+            {
+                InputAmount = InputAmount.Replace(",", ".");
+            }
             if (containsLetter)
             {
                 Console.WriteLine("Felaktig inmatning, skriv in beloppet utan valutan eller bokstäver");
@@ -60,19 +75,28 @@ class Program
             }
             else if (commandParts.Length == 4)
             {
-                AddExpense(decimal.Parse(commandParts[2]), commandParts[3]);
+                AddExpense(decimal.Parse(InputAmount), commandParts[3]);
             }
             else if (commandParts.Length > 4)
             {
                 string description = JoinFromIndex(4, commandParts);
-                AddExpense(decimal.Parse(commandParts[2]), commandParts[3], description);
+                AddExpense(decimal.Parse(InputAmount), commandParts[3], description);
             }
 
         }
 
         else if (commandParts.Length > 3 && commandParts[0] == "income" && commandParts[1] == "add")
         {
-            bool containsLetter = LetterFilter.IsMatch(commandParts[2]);
+            string InputAmount = commandParts[2];
+            bool containsLetter = LetterFilter.IsMatch(InputAmount);
+            if (UsedDecimalType == "," && InputAmount.Contains("."))
+            {
+                InputAmount = InputAmount.Replace(".", ",");
+            }
+            else if (UsedDecimalType == "." && !InputAmount.Contains(","))
+            {
+                InputAmount = InputAmount.Replace(",", ".");
+            }
             if (containsLetter)
             {
                 Console.WriteLine("Felaktig inmatning, skriv in beloppet utan valutan eller bokstäver");
@@ -80,12 +104,12 @@ class Program
             }
             else if (commandParts.Length == 4)
             {
-                AddIncome(decimal.Parse(commandParts[2]), commandParts[3]);
+                AddIncome(decimal.Parse(InputAmount), commandParts[3]);
             }
             else if (commandParts.Length > 4)
             {
                 string description = JoinFromIndex(4, commandParts);
-                AddIncome(decimal.Parse(commandParts[2]), commandParts[3], description);
+                AddIncome(decimal.Parse(InputAmount), commandParts[3], description);
             }
 
         }
@@ -227,11 +251,11 @@ class Program
         List<Transaction> ValueSortedTransactions = new List<Transaction>(transactions);
         if (sort == "highest")
         {
-            for(int i = 0; i < ValueSortedTransactions.Count; i++)
+            for (int i = 0; i < ValueSortedTransactions.Count; i++)
             {
-                for(int j = i + 1; j < ValueSortedTransactions.Count; j++)
+                for (int j = i + 1; j < ValueSortedTransactions.Count; j++)
                 {
-                    if(ValueSortedTransactions[i].Amount < ValueSortedTransactions[j].Amount)
+                    if (ValueSortedTransactions[i].Amount < ValueSortedTransactions[j].Amount)
                     {
                         Transaction temp = ValueSortedTransactions[i];
                         ValueSortedTransactions[i] = ValueSortedTransactions[j];
@@ -239,7 +263,7 @@ class Program
                     }
                 }
             }
-            for(int i = 0; i < ValueSortedTransactions.Count; i++)
+            for (int i = 0; i < ValueSortedTransactions.Count; i++)
             {
                 if (ValueSortedTransactions[i].Description == null)
                 {
@@ -251,11 +275,11 @@ class Program
         }
         else if (sort == "lowest")
         {
-            for(int i = 0; i < ValueSortedTransactions.Count; i++)
+            for (int i = 0; i < ValueSortedTransactions.Count; i++)
             {
-                for(int j = i + 1; j < ValueSortedTransactions.Count; j++)
+                for (int j = i + 1; j < ValueSortedTransactions.Count; j++)
                 {
-                    if(ValueSortedTransactions[i].Amount > ValueSortedTransactions[j].Amount)
+                    if (ValueSortedTransactions[i].Amount > ValueSortedTransactions[j].Amount)
                     {
                         Transaction temp = ValueSortedTransactions[i];
                         ValueSortedTransactions[i] = ValueSortedTransactions[j];
@@ -263,7 +287,7 @@ class Program
                     }
                 }
             }
-            for(int i = 0; i < ValueSortedTransactions.Count; i++)
+            for (int i = 0; i < ValueSortedTransactions.Count; i++)
             {
                 if (ValueSortedTransactions[i].Description == null)
                 {
