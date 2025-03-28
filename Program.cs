@@ -7,7 +7,7 @@ using System.Globalization;
 
 class Program
 {
-    //fixed so both "," and "." are accepted
+
     //TODO Add a sortby parameter to valuesorter so you can just sort and show the incomes or expenses
     //TODO change sortingalgorithm to a faster one then bubble sort. 
     //TODO be able to list just transactions of a sertain number like only 5 latest
@@ -28,7 +28,7 @@ class Program
     static List<Transaction> transactions = new List<Transaction>();
     static List<Transaction> Incomes = new List<Transaction>();
     static List<Transaction> Expenses = new List<Transaction>();
-    static Regex LetterFilter = new Regex(@"[a-zA-Z]");
+    static Regex SymbolLetterFilter = new Regex(@"[^\w\d\s.,]");
 
 
     static void introduction()
@@ -59,12 +59,12 @@ class Program
         else if (commandParts.Length > 3 && commandParts[0] == "expense" && commandParts[1] == "add")
         {
             string InputAmount = commandParts[2];
-            bool containsLetter = LetterFilter.IsMatch(InputAmount);
+            bool containsLetter = SymbolLetterFilter.IsMatch(InputAmount);
             if (UsedDecimalType == "," && InputAmount.Contains("."))
             {
                 InputAmount = InputAmount.Replace(".", ",");
             }
-            else if (UsedDecimalType == "." && !InputAmount.Contains(","))
+            else if (UsedDecimalType == "." && InputAmount.Contains(","))
             {
                 InputAmount = InputAmount.Replace(",", ".");
             }
@@ -88,18 +88,18 @@ class Program
         else if (commandParts.Length > 3 && commandParts[0] == "income" && commandParts[1] == "add")
         {
             string InputAmount = commandParts[2];
-            bool containsLetter = LetterFilter.IsMatch(InputAmount);
+            bool containsLetter = SymbolLetterFilter.IsMatch(InputAmount);
             if (UsedDecimalType == "," && InputAmount.Contains("."))
             {
                 InputAmount = InputAmount.Replace(".", ",");
             }
-            else if (UsedDecimalType == "." && !InputAmount.Contains(","))
+            else if (UsedDecimalType == "." && InputAmount.Contains(","))
             {
                 InputAmount = InputAmount.Replace(",", ".");
             }
             if (containsLetter)
             {
-                Console.WriteLine("Felaktig inmatning, skriv in beloppet utan valutan eller bokstäver");
+                Console.WriteLine("Felaktig inmatning, skriv in beloppet utan bokstäver eller tecken");
                 return;
             }
             else if (commandParts.Length == 4)
@@ -125,9 +125,17 @@ class Program
         {
             DeleteTransaction(int.Parse(commandParts[1]));
         }
-        else if (commandParts.Length == 5 && commandParts[0] == "list" && commandParts[1] == "transactions" && commandParts[2] == "sortby")
+        else if (commandParts.Length >= 5 && commandParts[0] == "list" && commandParts[1] == "transactions" && commandParts[2] == "sortby")
         {
-            SortingHandler(commandParts[3], commandParts[4]);
+            if (commandParts.Length == 6)
+            {
+                SortingHandler(commandParts[3], commandParts[4], commandParts[5]);
+            }
+            else
+            {
+                SortingHandler(commandParts[3], commandParts[4]);
+            }
+
         }
         else if (commandParts.Length == 2 && commandParts[0] == "list" && commandParts[1] == "expenses")
         {
@@ -223,15 +231,15 @@ class Program
             }
         }
     }
-    static void SortingHandler(string sort_by, string sort)
+    static void SortingHandler(string sort_by, string sort, string sort_2 = null)
     {
         if (sort_by == "value" && sort == "highest")
         {
-            ValueSorter("highest");
+            ValueSorter("highest", transactions);
         }
         else if (sort_by == "value" && sort == "lowest")
         {
-            ValueSorter("lowest");
+            ValueSorter("lowest", transactions);
         }
         else if (sort_by == "date" && sort == "newest")
         {
@@ -243,12 +251,38 @@ class Program
         }
         else if (sort_by == "category")
         {
-            CategorySorter(sort);
+            CategorySorter(sort, transactions);
         }
+        else if (sort_by == "expenses" && sort == "highest")
+        {
+            ValueSorter("highest", Expenses);
+        }
+        else if (sort_by == "expenses" && sort == "lowest")
+        {
+            ValueSorter("lowest", Expenses);
+        }
+        else if (sort_by == "expenses" && sort == "category")
+        {
+            CategorySorter(sort_2, Expenses);
+        }
+        else if (sort_by == "incomes" && sort == "highest")
+        {
+            ValueSorter("highest", Incomes);
+        }
+        else if (sort_by == "incomes" && sort == "lowest")
+        {
+            ValueSorter("lowest", Incomes);
+        }
+        else if (sort_by == "incomes" && sort == "category")
+        {
+            CategorySorter(sort_2, Incomes);
+        }
+
+
     }
-    static void ValueSorter(string sort)
+    static void ValueSorter(string sort, List<Transaction> usedList)
     {
-        List<Transaction> ValueSortedTransactions = new List<Transaction>(transactions);
+        List<Transaction> ValueSortedTransactions = new List<Transaction>(usedList);
         if (sort == "highest")
         {
             for (int i = 0; i < ValueSortedTransactions.Count; i++)
@@ -342,11 +376,11 @@ class Program
             Console.WriteLine($"id:{Expenses[i].Id} {Expenses[i].Date} {Expenses[i].Amount}kr {Expenses[i].Category} ({Expenses[i].Description})");
         }
     }
-    static bool CategoryIsInList(string category)
+    static bool CategoryIsInList(string category, List<Transaction> UsedList)
     {
-        for (int i = 0; i < transactions.Count; i++)
+        for (int i = 0; i < UsedList.Count; i++)
         {
-            if (transactions[i].Category == category)
+            if (UsedList[i].Category == category)
             {
                 return false;
             }
@@ -357,9 +391,9 @@ class Program
         }
         return true;
     }
-    static void CategorySorter(string category)
+    static void CategorySorter(string category, List<Transaction> usedList)
     {
-        bool CategoryNotFound = CategoryIsInList(category);
+        bool CategoryNotFound = CategoryIsInList(category, usedList);
         for (int i = 0; i < transactions.Count; i++)
         {
             int j = i + 1;
