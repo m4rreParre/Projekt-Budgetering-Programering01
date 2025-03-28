@@ -7,8 +7,6 @@ using System.Globalization;
 
 class Program
 {
-
-    //TODO Add a sortby parameter to valuesorter so you can just sort and show the incomes or expenses
     //TODO change sortingalgorithm to a faster one then bubble sort. 
     //TODO be able to list just transactions of a sertain number like only 5 latest
 
