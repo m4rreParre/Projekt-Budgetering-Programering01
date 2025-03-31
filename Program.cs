@@ -278,9 +278,9 @@ class Program
 
 
     }
-    static void ValueSorter(string sort, List<Transaction> usedList)
+    static void ValueSorter(string sort, List<Transaction> UsedList)
     {
-        List<Transaction> ValueSortedTransactions = new List<Transaction>(usedList);
+        List<Transaction> ValueSortedTransactions = new List<Transaction>(UsedList);
         if (sort == "highest")
         {
             for (int i = 0; i < ValueSortedTransactions.Count; i++)
@@ -389,9 +389,9 @@ class Program
         }
         return true;
     }
-    static void CategorySorter(string category, List<Transaction> usedList)
+    static void CategorySorter(string category, List<Transaction> UsedList)
     {
-        bool CategoryNotFound = CategoryIsInList(category, usedList);
+        bool CategoryNotFound = CategoryIsInList(category, UsedList);
         for (int i = 0; i < transactions.Count; i++)
         {
             int j = i + 1;
