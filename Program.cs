@@ -7,6 +7,7 @@ using System.Globalization;
 
 class Program
 {
+    //TODO fix sortby category
     //TODO change sortingalgorithm to a faster one then bubble sort. 
     //TODO be able to list just transactions of a sertain number like only 5 latest
 
@@ -381,10 +382,6 @@ class Program
             if (UsedList[i].Category == category)
             {
                 return false;
-            }
-            else
-            {
-                return true;
             }
         }
         return true;
