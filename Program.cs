@@ -7,7 +7,6 @@ using System.Globalization;
 
 class Program
 {
-    //TODO change sortingalgorithm to a faster one then bubble sort. 
     //TODO be able to list just transactions of a sertain number like only 5 latest
     //TODO ListTransactions should be called in other functions with parameters like wich list and how many to show
 
@@ -27,7 +26,7 @@ class Program
     static List<Transaction> transactions = new List<Transaction>();
     static List<Transaction> Incomes = new List<Transaction>();
     static List<Transaction> Expenses = new List<Transaction>();
-    static Regex SymbolLetterFilter = new Regex(@"[^\w\d\s.,]");
+    static Regex LetterFilter = new Regex(@"[a-zA-Z]");
 
 
     static void introduction()
@@ -58,7 +57,7 @@ class Program
         else if (commandParts.Length > 3 && commandParts[0] == "expense" && commandParts[1] == "add")
         {
             string InputAmount = commandParts[2];
-            bool containsLetter = SymbolLetterFilter.IsMatch(InputAmount);
+            bool containsLetter = LetterFilter.IsMatch(InputAmount);
             if (UsedDecimalType == "," && InputAmount.Contains("."))
             {
                 InputAmount = InputAmount.Replace(".", ",");
@@ -87,7 +86,7 @@ class Program
         else if (commandParts.Length > 3 && commandParts[0] == "income" && commandParts[1] == "add")
         {
             string InputAmount = commandParts[2];
-            bool containsLetter = SymbolLetterFilter.IsMatch(InputAmount);
+            bool containsLetter = LetterFilter.IsMatch(InputAmount);
             if (UsedDecimalType == "," && InputAmount.Contains("."))
             {
                 InputAmount = InputAmount.Replace(".", ",");
@@ -116,9 +115,26 @@ class Program
         {
             ShowBalance();
         }
-        else if (commandParts.Length < 3 && commandParts[0] == "list" && commandParts[1] == "transactions")
+        else if (commandParts.Length <= 3 && commandParts[0] == "list" && commandParts[1] == "transactions")
         {
-            ListTransactions();
+
+            if (commandParts.Length == 2)
+            {
+                ListTransactions(transactions);
+            }
+            else if (commandParts.Length == 3)
+            {
+
+                bool containsLetter = LetterFilter.IsMatch(commandParts[2]);
+                if (containsLetter)
+                {
+                    Console.WriteLine("Felaktig inmatning, skriv in mängden med bara siffror");
+                }
+                else 
+                {
+                    ListTransactions(transactions, int.Parse(commandParts[2]));
+                }
+            }
         }
         else if (commandParts.Length == 2 && commandParts[0] == "remove")
         {
@@ -206,17 +222,42 @@ class Program
         Console.WriteLine("totala utgifter: " + totalExpense + "kr");
         Console.WriteLine("Ditt saldo är: " + balance + "kr");
     }
-    static void ListTransactions()
+    static void ListTransactions(List<Transaction> usedList, int amountShowed = 0)
     {
-        for (int i = 0; i < transactions.Count; i++)
+        if (usedList.Count == 0)
         {
-            if (transactions[i].Description == null)
-            {
-                Console.WriteLine($"id:{transactions[i].Id} {transactions[i].Date} {transactions[i].Amount}kr {transactions[i].Category}");
-                continue;
-            }
-            Console.WriteLine($"id:{transactions[i].Id} {transactions[i].Date} {transactions[i].Amount}kr {transactions[i].Category} ({transactions[i].Description})");
+            Console.WriteLine("Inga transaktioner att visa");
+            return;
         }
+        else if (amountShowed == 0)
+        {
+            for (int i = 0; i < usedList.Count; i++)
+            {
+                if (usedList[i].Description == null)
+                {
+                    Console.WriteLine($"id:{usedList[i].Id} {usedList[i].Date} {usedList[i].Amount}kr {usedList[i].Category}");
+                    continue;
+                }
+                Console.WriteLine($"id:{usedList[i].Id} {usedList[i].Date} {usedList[i].Amount}kr {usedList[i].Category} ({usedList[i].Description})");
+            }
+        }
+        else if (amountShowed > usedList.Count)
+        {
+            Console.WriteLine("det finns bara " + usedList.Count + " transaktioner");
+        }
+        else if (amountShowed != 0)
+        {
+            for (int i = 0; i < amountShowed; i++)
+            {
+                if (usedList[i].Description == null)
+                {
+                    Console.WriteLine($"id:{usedList[i].Id} {usedList[i].Date} {usedList[i].Amount}kr {usedList[i].Category}");
+                    continue;
+                }
+                Console.WriteLine($"id:{usedList[i].Id} {usedList[i].Date} {usedList[i].Amount}kr {usedList[i].Category} ({usedList[i].Description})");
+            }
+        }
+
     }
     static void DeleteTransaction(int id)
     {
@@ -279,57 +320,25 @@ class Program
 
 
     }
-    static void ValueSorter(string sort, List<Transaction> UsedList)
+    static void ValueSorter(string sort, List<Transaction> usedList)
     {
-        List<Transaction> ValueSortedTransactions = new List<Transaction>(UsedList);
+        List<Transaction> sortedList = QuickSort(usedList, 0, usedList.Count - 1);
+        if (sortedList.Count == 0)
+        {
+            Console.WriteLine("Inga transaktioner att visa");
+            return;
+        }
         if (sort == "highest")
         {
-            for (int i = 0; i < ValueSortedTransactions.Count; i++)
-            {
-                for (int j = i + 1; j < ValueSortedTransactions.Count; j++)
-                {
-                    if (ValueSortedTransactions[i].Amount < ValueSortedTransactions[j].Amount)
-                    {
-                        Transaction temp = ValueSortedTransactions[i];
-                        ValueSortedTransactions[i] = ValueSortedTransactions[j];
-                        ValueSortedTransactions[j] = temp;
-                    }
-                }
-            }
-            for (int i = 0; i < ValueSortedTransactions.Count; i++)
-            {
-                if (ValueSortedTransactions[i].Description == null)
-                {
-                    Console.WriteLine($"id:{ValueSortedTransactions[i].Id} {ValueSortedTransactions[i].Date} {ValueSortedTransactions[i].Amount}kr {ValueSortedTransactions[i].Category}");
-                    continue;
-                }
-                Console.WriteLine($"id:{ValueSortedTransactions[i].Id} {ValueSortedTransactions[i].Date} {ValueSortedTransactions[i].Amount}kr {ValueSortedTransactions[i].Category} ({ValueSortedTransactions[i].Description})");
-            }
+            sortedList.Reverse();
+            ListTransactions(sortedList);
         }
         else if (sort == "lowest")
         {
-            for (int i = 0; i < ValueSortedTransactions.Count; i++)
-            {
-                for (int j = i + 1; j < ValueSortedTransactions.Count; j++)
-                {
-                    if (ValueSortedTransactions[i].Amount > ValueSortedTransactions[j].Amount)
-                    {
-                        Transaction temp = ValueSortedTransactions[i];
-                        ValueSortedTransactions[i] = ValueSortedTransactions[j];
-                        ValueSortedTransactions[j] = temp;
-                    }
-                }
-            }
-            for (int i = 0; i < ValueSortedTransactions.Count; i++)
-            {
-                if (ValueSortedTransactions[i].Description == null)
-                {
-                    Console.WriteLine($"id:{ValueSortedTransactions[i].Id} {ValueSortedTransactions[i].Date} {ValueSortedTransactions[i].Amount}kr {ValueSortedTransactions[i].Category}");
-                    continue;
-                }
-                Console.WriteLine($"id:{ValueSortedTransactions[i].Id} {ValueSortedTransactions[i].Date} {ValueSortedTransactions[i].Amount}kr {ValueSortedTransactions[i].Category} ({ValueSortedTransactions[i].Description})");
-            }
+            ListTransactions(sortedList);
         }
+
+
     }
     static void IncomeAndOutcomeSeperator()
     {
@@ -350,30 +359,16 @@ class Program
         Incomes.Clear();
 
         IncomeAndOutcomeSeperator();
-        for (int i = 0; i < Incomes.Count; i++)
-        {
-            if (Incomes[i].Description == null)
-            {
-                Console.WriteLine($"id:{Incomes[i].Id} {Incomes[i].Date} {Incomes[i].Amount}kr {Incomes[i].Category}");
-                continue;
-            }
-            Console.WriteLine($"id:{Incomes[i].Id} {Incomes[i].Date} {Incomes[i].Amount}kr {Incomes[i].Category} ({Incomes[i].Description})");
-        }
+        ListTransactions(Incomes);
+        Console.WriteLine("totala inkomster: " + Incomes.Count);
     }
     static void ListExpense()
     {
         Expenses.Clear();
 
         IncomeAndOutcomeSeperator();
-        for (int i = 0; i < Expenses.Count; i++)
-        {
-            if (Expenses[i].Description == null)
-            {
-                Console.WriteLine($"id:{Expenses[i].Id} {Expenses[i].Date} {Expenses[i].Amount}kr {Expenses[i].Category}");
-                continue;
-            }
-            Console.WriteLine($"id:{Expenses[i].Id} {Expenses[i].Date} {Expenses[i].Amount}kr {Expenses[i].Category} ({Expenses[i].Description})");
-        }
+        ListTransactions(Expenses);
+        Console.WriteLine("totala utgifter: " + Expenses.Count);
     }
     static bool CategoryIsInList(string category, List<Transaction> UsedList)
     {
@@ -391,7 +386,7 @@ class Program
         bool CategoryNotFound = CategoryIsInList(category, UsedList);
         for (int i = 0; i < transactions.Count; i++)
         {
-            int j = i + 1;
+
             if (transactions[i].Category == category)
             {
                 if (transactions[i].Description == null)
@@ -408,17 +403,57 @@ class Program
             }
         }
     }
-    static void QuickSort(List<Transaction> usedList, int left, int right)
+    static List<Transaction> QuickSort(List<Transaction> usedList, int left, int right)
     {
         List<Transaction> data = new List<Transaction>(usedList);
 
-        decimal pivot = (data[(left + right) / 2].Amount);
-        decimal leftHold = left;
-        decimal rightHold = right;
+        if (left < right)
+        {
+            // Hittar pivot-index genom att partitionera listan
+            int pivotIndex = Partition(data, left, right);
+
+            // Sorterar delarna före och efter pivot
+            QuickSort(data, left, pivotIndex - 1);
+            QuickSort(data, pivotIndex + 1, right);
+        }
+
+        return data;
+    }
+    static int Partition(List<Transaction> data, int left, int right)
+    {
+        // Väljer pivot-värde från mitten av listan
+        Decimal pivot = data[(left + right) / 2].Amount;
+
+        int leftHold = left;
+        int rightHold = right;
+
         while (leftHold <= rightHold)
         {
-           
+            // Hittar första elementet från vänster som är >= pivot
+            while (data[leftHold].Amount < pivot)
+            {
+                leftHold++;
+            }
+
+            // Hittar första elementet från höger som är <= pivot
+            while (data[rightHold].Amount > pivot)
+            {
+                rightHold--;
+            }
+
+            // Byter plats på elementen om de är på fel sida av pivot
+            if (leftHold <= rightHold)
+            {
+                Transaction temp = data[leftHold];
+                data[leftHold] = data[rightHold];
+                data[rightHold] = temp;
+                leftHold++;
+                rightHold--;
+            }
         }
+
+        // Returnerar ny position där partitioneringen kört klart
+        return leftHold;
     }
     static void Main(string[] args)
     {
