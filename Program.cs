@@ -7,9 +7,9 @@ using System.Globalization;
 
 class Program
 {
-    //TODO fix sortby category
     //TODO change sortingalgorithm to a faster one then bubble sort. 
     //TODO be able to list just transactions of a sertain number like only 5 latest
+    //TODO ListTransactions should be called in other functions with parameters like wich list and how many to show
 
     //TODO filters in listbalance syntax list balance sort_by="value" sort="highest", list balance sort_by="value" sort="lowest"
     //TODO filter by date - last month, last week, last year
@@ -406,6 +406,18 @@ class Program
                 Console.WriteLine("skriv in en kategori som finns");
                 return;
             }
+        }
+    }
+    static void QuickSort(List<Transaction> usedList, int left, int right)
+    {
+        List<Transaction> data = new List<Transaction>(usedList);
+
+        decimal pivot = (data[(left + right) / 2].Amount);
+        decimal leftHold = left;
+        decimal rightHold = right;
+        while (leftHold <= rightHold)
+        {
+           
         }
     }
     static void Main(string[] args)
