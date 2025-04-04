@@ -130,7 +130,7 @@ class Program
                 {
                     Console.WriteLine("Felaktig inmatning, skriv in mängden med bara siffror");
                 }
-                else 
+                else
                 {
                     ListTransactions(transactions, int.Parse(commandParts[2]));
                 }
@@ -154,10 +154,12 @@ class Program
         }
         else if (commandParts.Length == 2 && commandParts[0] == "list" && commandParts[1] == "expenses")
         {
+            //Fixa sortby på detta också
             ListExpense();
         }
         else if (commandParts.Length == 2 && commandParts[0] == "list" && commandParts[1] == "incomes")
         {
+            //Fixa sortby på detta också
             ListIncome();
         }
         else
@@ -283,11 +285,14 @@ class Program
         }
         else if (sort_by == "date" && sort == "newest")
         {
-
+            DateSorter(transactions);
+            ListTransactions(transactions);
         }
         else if (sort_by == "date" && sort == "oldest")
         {
-
+            DateSorter(transactions);
+            transactions.Reverse();
+            ListTransactions(transactions);
         }
         else if (sort_by == "category")
         {
@@ -338,6 +343,17 @@ class Program
             ListTransactions(sortedList);
         }
 
+
+    }
+    static void DateSorter(List<Transaction> usedList)
+    {
+        List<Transaction> sortedList = QuickSortDates(usedList, 0, usedList.Count - 1);
+        if (sortedList.Count == 0)
+        {
+            Console.WriteLine("Inga transaktioner att visa");
+            return;
+        }
+        ListTransactions(sortedList);
 
     }
     static void IncomeAndOutcomeSeperator()
@@ -437,6 +453,58 @@ class Program
 
             // Hittar första elementet från höger som är <= pivot
             while (data[rightHold].Amount > pivot)
+            {
+                rightHold--;
+            }
+
+            // Byter plats på elementen om de är på fel sida av pivot
+            if (leftHold <= rightHold)
+            {
+                Transaction temp = data[leftHold];
+                data[leftHold] = data[rightHold];
+                data[rightHold] = temp;
+                leftHold++;
+                rightHold--;
+            }
+        }
+
+        // Returnerar ny position där partitioneringen kört klart
+        return leftHold;
+    }
+    static List<Transaction> QuickSortDates(List<Transaction> usedList, int left, int right)
+    {
+        List<Transaction> data = new List<Transaction>(usedList);
+
+        if (left < right)
+        {
+            // Hittar pivot-index genom att partitionera listan
+            int pivotIndex = PartitionDates(data, left, right);
+
+            // Sorterar delarna före och efter pivot
+            QuickSortDates(data, left, pivotIndex - 1);
+            QuickSortDates(data, pivotIndex + 1, right);
+        }
+
+        return data;
+    }
+    static int PartitionDates(List<Transaction> data, int left, int right)
+    {
+        // Väljer pivot-värde från mitten av listan
+        DateTime pivot = data[(left + right) / 2].Date;
+
+        int leftHold = left;
+        int rightHold = right;
+
+        while (leftHold <= rightHold)
+        {
+            // Hittar första elementet från vänster som är >= pivot
+            while (data[leftHold].Date < pivot)
+            {
+                leftHold++;
+            }
+
+            // Hittar första elementet från höger som är <= pivot
+            while (data[rightHold].Date > pivot)
             {
                 rightHold--;
             }
