@@ -31,11 +31,12 @@ class Program
 
     static void introduction()
     {
-        Console.WriteLine("Välkommen till Budgeteringprogrammet! Skriv 'exit' för att avsluta.");
         Console.WriteLine("lista över kommandon: ");
         Console.WriteLine("expense add <belopp> <kategori> <beskrivning>");
         Console.WriteLine("income add <belopp> <kategori> <beskrivning>");
         Console.WriteLine("list transactions - för att visa alla transaktioner");
+        Console.WriteLine("list incomes - för att visa alla inkomster");
+        Console.WriteLine("list expenses - för att visa alla utgifter");
         Console.WriteLine("balance - för att visa ditt saldo");
         Console.WriteLine("remove <id> - för att ta bort en transaktion");
         Console.WriteLine("list transactions sortby <value|category> <highest/lowest |kategorinamn> - för att sortera transaktioner");
@@ -49,10 +50,16 @@ class Program
         {
             Environment.Exit(0);
         }
+        else if (commandParts[0] == "help")
+        {
+            introduction();
+        }
         else if (commandParts[0] == "clear")
         {
             Console.Clear();
-            introduction();
+            Console.WriteLine("Välkommen till Budgeteringprogrammet! Skriv 'exit' för att avsluta.");
+            Console.WriteLine("använder valutan: kr");
+            Console.WriteLine("skriv 'help' för att se en lista över kommandon");
         }
         else if (commandParts.Length > 3 && commandParts[0] == "expense" && commandParts[1] == "add")
         {
@@ -525,7 +532,9 @@ class Program
     }
     static void Main(string[] args)
     {
-        introduction();
+        Console.WriteLine("Välkommen till Budgeteringprogrammet! Skriv 'exit' för att avsluta.");
+        Console.WriteLine("använder valutan: kr");
+        Console.WriteLine("skriv 'help' för att se en lista över kommandon");
 
         while (true)
         {
