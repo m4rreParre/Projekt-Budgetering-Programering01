@@ -1,22 +1,17 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Globalization;
-using System.Text.Json;
+
 
 
 class Program
 {
 
     //TODO filter by date - last month, last week, last year
-    
-
-    //TODO add a way to add many transactions at once
-    //TODO add a way to remove transactions
     //TODO add a way to edit transactions
-    //TODO add a way to save transactions to a file
-    //TODO add a way to load transactions from a file
     //TODO add a monthly budget calculator that shows how much you can spend each day to stay within budget (watches how many days left in the month)
 
     static CultureInfo culture = CultureInfo.CurrentCulture;
@@ -179,7 +174,7 @@ class Program
             }
             else
             {
-                 if (commandParts[3] == "category")
+                if (commandParts[3] == "category")
                 {
                     SortingHandler(commandParts[3], commandParts[4], null, Expenses);
                 }
@@ -207,9 +202,13 @@ class Program
                 }
             }
         }
-        else if(commandParts[0] == "savetransactions")
+        else if (commandParts[0] == "savetransactions")
         {
             SaveTransactions();
+        }
+        else if (commandParts[0] == "loadtransactions")
+        {
+            LoadTransactions();
         }
         else
         {
@@ -581,9 +580,25 @@ class Program
     }
     static void SaveTransactions()
     {
-        string jsonString = JsonSerializer.Serialize(transactions); //funkar ej för att id (tror id är felet)
-        File.WriteAllText("transactions.json", jsonString);
-        Console.WriteLine("Transaktioner har sparats till filen transactions.json");
+        string json = JsonConvert.SerializeObject(transactions, Formatting.Indented);
+        string filePath = "transactions.json";
+        File.WriteAllText(filePath, json);
+        Console.WriteLine("Transaktioner har sparats till " + filePath);
+    }
+    static void LoadTransactions()
+    {
+        string filePath = "transactions.json";
+        if (File.Exists(filePath))
+        {
+            string json = File.ReadAllText(filePath);
+            transactions = JsonConvert.DeserializeObject<List<Transaction>>(json);
+            Console.WriteLine("Transaktioner har laddats från " + filePath);
+        }
+        else
+        {
+
+            Console.WriteLine("ingen transaktionsfil att ladda");
+        }
     }
     static void Main(string[] args)
     {

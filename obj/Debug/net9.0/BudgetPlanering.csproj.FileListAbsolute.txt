@@ -28,3 +28,6 @@ C:\Users\marvin.gren\Documents\programmering01\Projekt-Budgetering-Programering0
 C:\Users\marvin.gren\Documents\programmering01\Projekt-Budgetering-Programering01\obj\Debug\net9.0\BudgetPlanering.pdb
 C:\Users\marvin.gren\Documents\programmering01\Projekt-Budgetering-Programering01\obj\Debug\net9.0\BudgetPlanering.genruntimeconfig.cache
 C:\Users\marvin.gren\Documents\programmering01\Projekt-Budgetering-Programering01\obj\Debug\net9.0\ref\BudgetPlanering.dll
+C:\Users\marre\Documents\VscProjects\c#-Projects\BudgetPlanering\bin\Debug\net9.0\Newtonsoft.Json.dll
+C:\Users\marre\Documents\VscProjects\c#-Projects\BudgetPlanering\obj\Debug\net9.0\BudgetPlanering.csproj.AssemblyReference.cache
+C:\Users\marre\Documents\VscProjects\c#-Projects\BudgetPlanering\obj\Debug\net9.0\BudgetPl.C6003976.Up2Date
