@@ -3,16 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Globalization;
+using System.Text.Json;
 
 
 class Program
 {
-    //TODO be able to list just transactions of a sertain number like only 5 latest
-    //TODO ListTransactions should be called in other functions with parameters like wich list and how many to show
 
-    //TODO filters in listbalance syntax list balance sort_by="value" sort="highest", list balance sort_by="value" sort="lowest"
     //TODO filter by date - last month, last week, last year
-
+    
 
     //TODO add a way to add many transactions at once
     //TODO add a way to remove transactions
@@ -118,6 +116,10 @@ class Program
             }
 
         }
+        else if (commandParts.Length == 3 && commandParts[0] == "income" && commandParts[1] == "add" || commandParts.Length == 3 && commandParts[0] == "expense" && commandParts[1] == "add")
+        {
+            Console.WriteLine("du måste ange en kategori");
+        }
         else if (commandParts.Length == 1 && commandParts[0] == "balance")
         {
             ShowBalance();
@@ -161,13 +163,53 @@ class Program
         }
         else if (commandParts.Length == 2 && commandParts[0] == "list" && commandParts[1] == "expenses")
         {
-            //Fixa sortby på detta också
+            //implementera senare siffra efter expenses för att lista visst antal exoenses
             ListExpense();
         }
         else if (commandParts.Length == 2 && commandParts[0] == "list" && commandParts[1] == "incomes")
         {
-            //Fixa sortby på detta också
+            //implementera senare siffra efter incomes för att lista visst antal inkomster
             ListIncome();
+        }
+        else if (commandParts.Length >= 2 && commandParts[0] == "list" && commandParts[1] == "expenses" && commandParts[2] == "sortby")
+        {
+            if (commandParts.Length == 6)
+            {
+                SortingHandler(commandParts[3], commandParts[1], commandParts[4], Expenses);
+            }
+            else
+            {
+                 if (commandParts[3] == "category")
+                {
+                    SortingHandler(commandParts[3], commandParts[4], null, Expenses);
+                }
+                else
+                {
+                    SortingHandler(commandParts[1], commandParts[4], null, Expenses);
+                }
+            }
+        }
+        else if (commandParts.Length >= 2 && commandParts[0] == "list" && commandParts[1] == "incomes" && commandParts[2] == "sortby")
+        {
+            if (commandParts.Length == 6)
+            {
+                SortingHandler(commandParts[3], commandParts[1], commandParts[4], Incomes);
+            }
+            else
+            {
+                if (commandParts[3] == "category")
+                {
+                    SortingHandler(commandParts[3], commandParts[4], null, Incomes);
+                }
+                else
+                {
+                    SortingHandler(commandParts[1], commandParts[4], null, Incomes);
+                }
+            }
+        }
+        else if(commandParts[0] == "savetransactions")
+        {
+            SaveTransactions();
         }
         else
         {
@@ -280,8 +322,12 @@ class Program
             }
         }
     }
-    static void SortingHandler(string sort_by, string sort, string sort_2 = null)
+    static void SortingHandler(string sort_by, string sort, string sort_2 = null, List<Transaction> usedList = null)
     {
+        if (usedList == null)
+        {
+            usedList = transactions;
+        }
         if (sort_by == "value" && sort == "highest")
         {
             ValueSorter("highest", transactions);
@@ -292,18 +338,15 @@ class Program
         }
         else if (sort_by == "date" && sort == "newest")
         {
-            DateSorter(transactions);
-            ListTransactions(transactions);
+            DateSorter(transactions, false);
         }
         else if (sort_by == "date" && sort == "oldest")
         {
-            DateSorter(transactions);
-            transactions.Reverse();
-            ListTransactions(transactions);
+            DateSorter(transactions, true);
         }
         else if (sort_by == "category")
         {
-            CategorySorter(sort, transactions);
+            CategorySorter(sort, usedList);
         }
         else if (sort_by == "expenses" && sort == "highest")
         {
@@ -352,7 +395,7 @@ class Program
 
 
     }
-    static void DateSorter(List<Transaction> usedList)
+    static void DateSorter(List<Transaction> usedList, bool newestFirst = true)
     {
         List<Transaction> sortedList = QuickSortDates(usedList, 0, usedList.Count - 1);
         if (sortedList.Count == 0)
@@ -360,7 +403,13 @@ class Program
             Console.WriteLine("Inga transaktioner att visa");
             return;
         }
+
+        if (!newestFirst)
+        {
+            sortedList.Reverse();
+        }
         ListTransactions(sortedList);
+
 
     }
     static void IncomeAndOutcomeSeperator()
@@ -529,6 +578,12 @@ class Program
 
         // Returnerar ny position där partitioneringen kört klart
         return leftHold;
+    }
+    static void SaveTransactions()
+    {
+        string jsonString = JsonSerializer.Serialize(transactions); //funkar ej för att id (tror id är felet)
+        File.WriteAllText("transactions.json", jsonString);
+        Console.WriteLine("Transaktioner har sparats till filen transactions.json");
     }
     static void Main(string[] args)
     {
