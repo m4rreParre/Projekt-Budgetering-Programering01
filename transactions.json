@@ -1,0 +1,44 @@
+[
+  {
+    "Id": 1,
+    "Amount": 500.0,
+    "Category": "arbete",
+    "Description": null,
+    "Date": "2025-04-08T20:30:33.4619877+02:00"
+  },
+  {
+    "Id": 2,
+    "Amount": 300.0,
+    "Category": "investeringar",
+    "Description": null,
+    "Date": "2025-04-08T20:30:45.9811837+02:00"
+  },
+  {
+    "Id": 3,
+    "Amount": 5000.0,
+    "Category": "frilansarbete",
+    "Description": null,
+    "Date": "2025-04-08T20:30:58.3290474+02:00"
+  },
+  {
+    "Id": 4,
+    "Amount": -800.0,
+    "Category": "hyra",
+    "Description": null,
+    "Date": "2025-04-08T20:31:11.100213+02:00"
+  },
+  {
+    "Id": 5,
+    "Amount": -100.0,
+    "Category": "mat",
+    "Description": null,
+    "Date": "2025-04-08T20:31:23.1348912+02:00"
+  },
+  {
+    "Id": 6,
+    "Amount": -50.0,
+    "Category": "bilförsäkning",
+    "Description": null,
+    "Date": "2025-04-08T20:31:31.3541022+02:00"
+  }
+]

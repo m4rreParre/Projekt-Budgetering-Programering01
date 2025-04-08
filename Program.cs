@@ -25,15 +25,25 @@ class Program
     static void introduction()
     {
         Console.WriteLine("lista över kommandon: ");
+        Console.WriteLine("==========================");
+        Console.WriteLine("clear - för att ränsa skärmen");
         Console.WriteLine("expense add <belopp> <kategori> <beskrivning>");
         Console.WriteLine("income add <belopp> <kategori> <beskrivning>");
+        Console.WriteLine("-------------------------------------------");
         Console.WriteLine("list transactions - för att visa alla transaktioner");
         Console.WriteLine("list incomes - för att visa alla inkomster");
         Console.WriteLine("list expenses - för att visa alla utgifter");
+        Console.WriteLine("-------------------------------------------");
         Console.WriteLine("balance - för att visa ditt saldo");
         Console.WriteLine("remove <id> - för att ta bort en transaktion");
-        Console.WriteLine("list transactions sortby <value|category> <highest/lowest |kategorinamn> - för att sortera transaktioner");
-        Console.WriteLine("clear - för att ränsa skärmen");
+        Console.WriteLine("-------------------------------------------");
+        Console.WriteLine("list transactions sortby <value|category|date> <highest/lowest |kategorinamn|newest/oldest> - för att sortera transaktioner");
+        Console.WriteLine("list expenses sortby <value|category> <highest/lowest |kategorinamn> - för att sortera utgifter");
+        Console.WriteLine("list incomes sortby <value|category> <highest/lowest |kategorinamn> - för att sortera inkomster");
+        Console.WriteLine("-------------------------------------------");
+        Console.WriteLine("savetransactions - för att spara transaktioner till en fil");
+        Console.WriteLine("loadtransactions - för att ladda transaktioner från en fil");
+        Console.WriteLine("==========================");
     }
     static void HandleCommand(string command)
     {
@@ -596,9 +606,23 @@ class Program
         }
         else
         {
-
             Console.WriteLine("ingen transaktionsfil att ladda");
         }
+    }
+
+    static int LoadId()
+    {
+        System.Console.WriteLine("laddar id");
+        int id = 0;
+        for (int i = 0; i < transactions.Count; i++)
+        {
+            if (transactions[i].Id > id)
+            {
+                id = transactions[i].Id;
+            }
+        }
+        Console.WriteLine("senaste id: " + id);
+        return id + 1;
     }
     static void Main(string[] args)
     {

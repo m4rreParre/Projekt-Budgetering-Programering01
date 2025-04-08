@@ -1,9 +1,14 @@
 using System;
 using System.Collections.Generic;
 
+
 public struct Transaction
 {
-    
+    public static void IdChange(int newId)
+    {
+        nextId = newId;
+    }
+
     private static int nextId = 1;
     public int Id;
     public decimal Amount; //belopp (positivt för inkomst, negativ för utgift)
@@ -12,11 +17,12 @@ public struct Transaction
     public DateTime Date; //Datum när transaktionen gjordes
 
     public Transaction(decimal amount, string category, string description = null)
-    {   
+    {
         Id = nextId++;
         Amount = amount;
         Category = category;
         Description = description;
         Date = DateTime.Now;
     }
+
 }
