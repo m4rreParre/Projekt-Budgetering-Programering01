@@ -1,44 +1,44 @@
 [
   {
     "Id": 1,
-    "Amount": 500.0,
-    "Category": "arbete",
+    "Amount": 1200.0,
+    "Category": "CSN-insättning",
     "Description": null,
-    "Date": "2025-04-08T20:30:33.4619877+02:00"
+    "Date": "2025-04-08T21:20:12.1234567+02:00"
   },
   {
     "Id": 2,
-    "Amount": 300.0,
-    "Category": "investeringar",
+    "Amount": -75.0,
+    "Category": "lunch på Hemmakväll",
     "Description": null,
-    "Date": "2025-04-08T20:30:45.9811837+02:00"
+    "Date": "2025-04-08T21:21:33.2345678+02:00"
   },
   {
     "Id": 3,
-    "Amount": 5000.0,
-    "Category": "frilansarbete",
+    "Amount": 600.0,
+    "Category": "sålde skolprojekt till en kompis",
     "Description": null,
-    "Date": "2025-04-08T20:30:58.3290474+02:00"
+    "Date": "2025-04-08T21:22:44.3456789+02:00"
   },
   {
     "Id": 4,
-    "Amount": -800.0,
-    "Category": "hyra",
+    "Amount": -129.0,
+    "Category": "månadens busskort",
     "Description": null,
-    "Date": "2025-04-08T20:31:11.100213+02:00"
+    "Date": "2025-04-08T21:23:55.4567890+02:00"
   },
   {
     "Id": 5,
-    "Amount": -100.0,
-    "Category": "mat",
+    "Amount": -199.0,
+    "Category": "programmeringsbok (rekommenderad av Hannes)",
     "Description": null,
-    "Date": "2025-04-08T20:31:23.1348912+02:00"
+    "Date": "2025-04-08T21:24:10.5678901+02:00"
   },
   {
     "Id": 6,
-    "Amount": -50.0,
-    "Category": "bilförsäkning",
+    "Amount": -89.0,
+    "Category": "fredagsfika med klassen",
     "Description": null,
-    "Date": "2025-04-08T20:31:31.3541022+02:00"
+    "Date": "2025-04-08T21:25:35.6789012+02:00"
   }
 ]

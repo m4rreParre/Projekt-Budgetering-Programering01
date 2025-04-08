@@ -219,6 +219,7 @@ class Program
         else if (commandParts[0] == "loadtransactions")
         {
             LoadTransactions();
+
         }
         else
         {
@@ -602,7 +603,9 @@ class Program
         {
             string json = File.ReadAllText(filePath);
             transactions = JsonConvert.DeserializeObject<List<Transaction>>(json);
-            Console.WriteLine("Transaktioner har laddats från " + filePath);
+            Console.WriteLine("Transpersoner har laddats från " + filePath);
+            int id = LoadId();
+            Transaction.IdChange(id);
         }
         else
         {
@@ -612,7 +615,7 @@ class Program
 
     static int LoadId()
     {
-        System.Console.WriteLine("laddar id");
+
         int id = 0;
         for (int i = 0; i < transactions.Count; i++)
         {
@@ -621,7 +624,6 @@ class Program
                 id = transactions[i].Id;
             }
         }
-        Console.WriteLine("senaste id: " + id);
         return id + 1;
     }
     static void Main(string[] args)
