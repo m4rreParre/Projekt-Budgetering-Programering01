@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public struct Transaction
 {
-    public static void IdChange(int newId)
+    public static void idChange(int newId)
     {
         nextId = newId;
     }

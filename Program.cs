@@ -15,14 +15,14 @@ class Program
     //TODO add a monthly budget calculator that shows how much you can spend each day to stay within budget (watches how many days left in the month)
 
     static CultureInfo culture = CultureInfo.CurrentCulture;
-    static string UsedDecimalType = culture.NumberFormat.NumberDecimalSeparator;
+    static string usedDecimalType = culture.NumberFormat.NumberDecimalSeparator;
     static List<Transaction> transactions = new List<Transaction>();
-    static List<Transaction> Incomes = new List<Transaction>();
-    static List<Transaction> Expenses = new List<Transaction>();
-    static Regex LetterFilter = new Regex(@"[a-zA-Z]");
+    static List<Transaction> incomes = new List<Transaction>();
+    static List<Transaction> expenses = new List<Transaction>();
+    static Regex letterFilter = new Regex(@"[a-zA-Z]");
 
 
-    static void introduction()
+    static void Introduction()
     {
         Console.WriteLine("lista över kommandon: ");
         Console.WriteLine("==========================");
@@ -55,7 +55,7 @@ class Program
         }
         else if (commandParts[0] == "help")
         {
-            introduction();
+            Introduction();
         }
         else if (commandParts[0] == "clear")
         {
@@ -67,12 +67,12 @@ class Program
         else if (commandParts.Length > 3 && commandParts[0] == "expense" && commandParts[1] == "add")
         {
             string InputAmount = commandParts[2];
-            bool containsLetter = LetterFilter.IsMatch(InputAmount);
-            if (UsedDecimalType == "," && InputAmount.Contains("."))
+            bool containsLetter = letterFilter.IsMatch(InputAmount);
+            if (usedDecimalType == "," && InputAmount.Contains("."))
             {
                 InputAmount = InputAmount.Replace(".", ",");
             }
-            else if (UsedDecimalType == "." && InputAmount.Contains(","))
+            else if (usedDecimalType == "." && InputAmount.Contains(","))
             {
                 InputAmount = InputAmount.Replace(",", ".");
             }
@@ -96,12 +96,12 @@ class Program
         else if (commandParts.Length > 3 && commandParts[0] == "income" && commandParts[1] == "add")
         {
             string InputAmount = commandParts[2];
-            bool containsLetter = LetterFilter.IsMatch(InputAmount);
-            if (UsedDecimalType == "," && InputAmount.Contains("."))
+            bool containsLetter = letterFilter.IsMatch(InputAmount);
+            if (usedDecimalType == "," && InputAmount.Contains("."))
             {
                 InputAmount = InputAmount.Replace(".", ",");
             }
-            else if (UsedDecimalType == "." && InputAmount.Contains(","))
+            else if (usedDecimalType == "." && InputAmount.Contains(","))
             {
                 InputAmount = InputAmount.Replace(",", ".");
             }
@@ -139,7 +139,7 @@ class Program
             else if (commandParts.Length == 3)
             {
 
-                bool containsLetter = LetterFilter.IsMatch(commandParts[2]);
+                bool containsLetter = letterFilter.IsMatch(commandParts[2]);
                 if (containsLetter)
                 {
                     Console.WriteLine("Felaktig inmatning, skriv in mängden med bara siffror");
@@ -152,12 +152,12 @@ class Program
         }
         else if (commandParts.Length == 2 && commandParts[0] == "remove")
         {
-        bool usesLetters = LetterFilter.IsMatch(commandParts[1].ToString());
-        if (usesLetters)
-        {
-            Console.WriteLine("Felaktig inmatning, skriv in id:t med bara siffror");
-            return;
-        }
+            bool usesLetters = letterFilter.IsMatch(commandParts[1].ToString());
+            if (usesLetters)
+            {
+                Console.WriteLine("Felaktig inmatning, skriv in id:t med bara siffror");
+                return;
+            }
             DeleteTransaction(int.Parse(commandParts[1]));
         }
         else if (commandParts.Length >= 5 && commandParts[0] == "list" && commandParts[1] == "transactions" && commandParts[2] == "sortby")
@@ -184,37 +184,39 @@ class Program
         }
         else if (commandParts.Length >= 2 && commandParts[0] == "list" && commandParts[1] == "expenses" && commandParts[2] == "sortby")
         {
+            IncomeAndOutcomeSeperator();
             if (commandParts.Length == 6)
             {
-                SortingHandler(commandParts[3], commandParts[1], commandParts[4], Expenses);
+                SortingHandler(commandParts[3], commandParts[1], commandParts[4], expenses);
             }
             else
             {
                 if (commandParts[3] == "category")
                 {
-                    SortingHandler(commandParts[3], commandParts[4], null, Expenses);
+                    SortingHandler(commandParts[3], commandParts[4], null, expenses);
                 }
                 else
                 {
-                    SortingHandler(commandParts[1], commandParts[4], null, Expenses);
+                    SortingHandler(commandParts[1], commandParts[4], null, expenses);
                 }
             }
         }
         else if (commandParts.Length >= 2 && commandParts[0] == "list" && commandParts[1] == "incomes" && commandParts[2] == "sortby")
         {
+            IncomeAndOutcomeSeperator();
             if (commandParts.Length == 6)
             {
-                SortingHandler(commandParts[3], commandParts[1], commandParts[4], Incomes);
+                SortingHandler(commandParts[3], commandParts[1], commandParts[4], incomes);
             }
             else
             {
                 if (commandParts[3] == "category")
                 {
-                    SortingHandler(commandParts[3], commandParts[4], null, Incomes);
+                    SortingHandler(commandParts[3], commandParts[4], null, incomes);
                 }
                 else
                 {
-                    SortingHandler(commandParts[1], commandParts[4], null, Incomes);
+                    SortingHandler(commandParts[1], commandParts[4], null, incomes);
                 }
             }
         }
@@ -347,78 +349,73 @@ class Program
             Console.WriteLine("Transaktionen med det id:t finns inte");
         }
     }
-    static void SortingHandler(string sort_by, string sort, string sort_2 = null, List<Transaction> usedList = null)
+    static void SortingHandler(string sortby, string sort, string sort2 = null, List<Transaction> usedList = null)
     {
         if (usedList == null)
         {
             usedList = transactions;
         }
-        if (sort_by == "value" && sort == "highest")
+        if (sortby == "value" && sort == "highest")
         {
             ValueSorter("highest", transactions);
         }
-        else if (sort_by == "value" && sort == "lowest")
+        else if (sortby == "value" && sort == "lowest")
         {
             ValueSorter("lowest", transactions);
         }
-        else if (sort_by == "date" && sort == "newest")
+        else if (sortby == "date" && sort == "newest")
         {
             DateSorter(transactions, false);
         }
-        else if (sort_by == "date" && sort == "oldest")
+        else if (sortby == "date" && sort == "oldest")
         {
             DateSorter(transactions, true);
         }
-        else if (sort_by == "category")
+        else if (sortby == "category")
         {
             CategorySorter(sort, usedList);
         }
-        else if (sort_by == "expenses" && sort == "highest")
+        else if (sortby == "expenses" && sort == "highest")
         {
-            ValueSorter("highest", Expenses);
+            ValueSorter("highest", expenses);
         }
-        else if (sort_by == "expenses" && sort == "lowest")
+        else if (sortby == "expenses" && sort == "lowest")
         {
-            ValueSorter("lowest", Expenses);
+            ValueSorter("lowest", expenses);
         }
-        else if (sort_by == "expenses" && sort == "category")
+        else if (sortby == "expenses" && sort == "category")
         {
-            CategorySorter(sort_2, Expenses);
+            CategorySorter(sort2, expenses);
         }
-        else if (sort_by == "incomes" && sort == "highest")
+        else if (sortby == "incomes" && sort == "highest")
         {
-            ValueSorter("highest", Incomes);
+            ValueSorter("highest", incomes);
         }
-        else if (sort_by == "incomes" && sort == "lowest")
+        else if (sortby == "incomes" && sort == "lowest")
         {
-            ValueSorter("lowest", Incomes);
+            ValueSorter("lowest", incomes);
         }
-        else if (sort_by == "incomes" && sort == "category")
+        else if (sortby == "incomes" && sort == "category")
         {
-            CategorySorter(sort_2, Incomes);
+            CategorySorter(sort2, incomes);
         }
 
 
     }
     static void ValueSorter(string sort, List<Transaction> usedList)
     {
-        List<Transaction> sortedList = QuickSort(usedList, 0, usedList.Count - 1);
-        if (sortedList.Count == 0)
+        
+        if (usedList.Count == 0)
         {
             Console.WriteLine("Inga transaktioner att visa");
             return;
         }
+        QuickSort(usedList, 0, usedList.Count - 1);
         if (sort == "highest")
         {
-            sortedList.Reverse();
-            ListTransactions(sortedList);
+            usedList.Reverse();
         }
-        else if (sort == "lowest")
-        {
-            ListTransactions(sortedList);
-        }
-
-
+        ListTransactions(usedList);
     }
     static void DateSorter(List<Transaction> usedList, bool newestFirst = true)
     {
@@ -443,44 +440,43 @@ class Program
         {
             if (transactions[i].Amount > 0)
             {
-                Incomes.Add(transactions[i]);
+                incomes.Add(transactions[i]);
             }
             else if (transactions[i].Amount < 0)
             {
-                Expenses.Add(transactions[i]);
+                expenses.Add(transactions[i]);
             }
         }
     }
     static void ListIncome()
     {
-        Incomes.Clear();
+        incomes.Clear();
 
         IncomeAndOutcomeSeperator();
-        ListTransactions(Incomes);
-        Console.WriteLine("totala inkomster: " + Incomes.Count);
+        ListTransactions(incomes);
+        Console.WriteLine("totala inkomster: " + incomes.Count);
     }
     static void ListExpense()
     {
-        Expenses.Clear();
-
+        expenses.Clear();
         IncomeAndOutcomeSeperator();
-        ListTransactions(Expenses);
-        Console.WriteLine("totala utgifter: " + Expenses.Count);
+        ListTransactions(expenses);
+        Console.WriteLine("totala utgifter: " + expenses.Count);
     }
-    static bool CategoryIsInList(string category, List<Transaction> UsedList)
+    static bool CategoryIsInList(string category, List<Transaction> usedList)
     {
-        for (int i = 0; i < UsedList.Count; i++)
+        for (int i = 0; i < usedList.Count; i++)
         {
-            if (UsedList[i].Category == category)
+            if (usedList[i].Category == category)
             {
                 return false;
             }
         }
         return true;
     }
-    static void CategorySorter(string category, List<Transaction> UsedList)
+    static void CategorySorter(string category, List<Transaction> usedList)
     {
-        bool CategoryNotFound = CategoryIsInList(category, UsedList);
+        bool CategoryNotFound = CategoryIsInList(category, usedList);
         for (int i = 0; i < transactions.Count; i++)
         {
 
@@ -500,45 +496,31 @@ class Program
             }
         }
     }
-    static List<Transaction> QuickSort(List<Transaction> usedList, int left, int right)
+    static void QuickSort(List<Transaction> data, int left, int right)
     {
-        List<Transaction> data = new List<Transaction>(usedList);
-
         if (left < right)
         {
-            // Hittar pivot-index genom att partitionera listan
             int pivotIndex = Partition(data, left, right);
-
-            // Sorterar delarna före och efter pivot
-            QuickSort(data, left, pivotIndex - 1);
-            QuickSort(data, pivotIndex + 1, right);
+            QuickSort(data, left, pivotIndex - 1); // Sortera vänstra delen
+            QuickSort(data, pivotIndex + 1, right); // Sortera högra delen
         }
-
-        return data;
     }
     static int Partition(List<Transaction> data, int left, int right)
     {
-        // Väljer pivot-värde från mitten av listan
-        Decimal pivot = data[(left + right) / 2].Amount;
-
+        Decimal pivot = data[(left + right) / 2].Amount; // Pivot från mitten
         int leftHold = left;
         int rightHold = right;
 
         while (leftHold <= rightHold)
         {
-            // Hittar första elementet från vänster som är >= pivot
             while (data[leftHold].Amount < pivot)
             {
                 leftHold++;
             }
-
-            // Hittar första elementet från höger som är <= pivot
             while (data[rightHold].Amount > pivot)
             {
                 rightHold--;
             }
-
-            // Byter plats på elementen om de är på fel sida av pivot
             if (leftHold <= rightHold)
             {
                 Transaction temp = data[leftHold];
@@ -548,8 +530,6 @@ class Program
                 rightHold--;
             }
         }
-
-        // Returnerar ny position där partitioneringen kört klart
         return leftHold;
     }
     static List<Transaction> QuickSortDates(List<Transaction> usedList, int left, int right)
@@ -620,7 +600,7 @@ class Program
             transactions = JsonConvert.DeserializeObject<List<Transaction>>(json);
             Console.WriteLine("Transpersoner har laddats från " + filePath);
             int id = LoadId();
-            Transaction.IdChange(id);
+            Transaction.idChange(id);
         }
         else
         {
