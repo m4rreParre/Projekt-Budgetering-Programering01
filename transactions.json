@@ -1,51 +1,16 @@
 [
   {
     "Id": 1,
-    "Amount": 1200.0,
-    "Category": "CSN",
-    "Description": "CSN-insättning",
-    "Date": "2025-04-08T21:20:12.1234567+02:00"
+    "Amount": 6000.0,
+    "Category": "jobb",
+    "Description": "säljer knark",
+    "Date": "2025-04-09T10:49:44.4702511+02:00"
   },
   {
     "Id": 2,
-    "Amount": -75.0,
+    "Amount": -40.0,
     "Category": "mat",
-    "Description": "lunch på Hemmakväll",
-    "Date": "2025-04-08T21:21:33.2345678+02:00"
-  },
-  {
-    "Id": 3,
-    "Amount": 600.0,
-    "Category": "privat",
-    "Description": "sålde skolprojekt till en kompis",
-    "Date": "2025-04-08T21:22:44.3456789+02:00"
-  },
-  {
-    "Id": 4,
-    "Amount": -129.0,
-    "Category": "transport",
-    "Description": "busskort",
-    "Date": "2025-04-08T21:23:55.4567890+02:00"
-  },
-  {
-    "Id": 5,
-    "Amount": -199.0,
-    "Category": "fritid",
-    "Description": "programmeringsbok (rekommenderad av Hannes)",
-    "Date": "2025-04-08T21:24:10.5678901+02:00"
-  },
-  {
-    "Id": 6,
-    "Amount": -89.0,
-    "Category": "mat",
-    "Description": "fredagsfika med klassen",
-    "Date": "2025-04-08T21:25:35.6789012+02:00"
-  },
-  {
-    "Id": 7,
-    "Amount": 500.0,
-    "Category": "jobb",
-    "Description": "sålde knark",
-    "Date": "2025-04-08T21:25:35.6789012+02:00"
+    "Description": "energi dryck",
+    "Date": "2025-04-09T10:49:55.5071675+02:00"
   }
 ]

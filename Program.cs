@@ -152,6 +152,12 @@ class Program
         }
         else if (commandParts.Length == 2 && commandParts[0] == "remove")
         {
+        bool usesLetters = LetterFilter.IsMatch(commandParts[1].ToString());
+        if (usesLetters)
+        {
+            Console.WriteLine("Felaktig inmatning, skriv in id:t med bara siffror");
+            return;
+        }
             DeleteTransaction(int.Parse(commandParts[1]));
         }
         else if (commandParts.Length >= 5 && commandParts[0] == "list" && commandParts[1] == "transactions" && commandParts[2] == "sortby")
@@ -322,14 +328,23 @@ class Program
     }
     static void DeleteTransaction(int id)
     {
+        bool idFound = false;
+
         for (int i = 0; i < transactions.Count; i++)
         {
+
             if (transactions[i].Id == id)
             {
+                idFound = true;
                 transactions.RemoveAt(i);
                 Console.WriteLine("Transaktionen har tagits bort");
                 return;
             }
+
+        }
+        if (idFound == false)
+        {
+            Console.WriteLine("Transaktionen med det id:t finns inte");
         }
     }
     static void SortingHandler(string sort_by, string sort, string sort_2 = null, List<Transaction> usedList = null)
